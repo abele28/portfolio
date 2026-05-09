@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { ChevronDown, Github, Mail, Linkedin } from 'lucide-react';
+import { ChevronDown, Github } from 'lucide-react';
 
 function Photo({ src, alt, className }) {
   const [error, setError] = useState(false);
@@ -88,46 +88,12 @@ export default function Portfolio() {
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 overflow-hidden">
-      {/* Contact bar */}
-      <div className="fixed top-0 w-full z-50 bg-slate-900/95 backdrop-blur border-b border-slate-800/60">
-        <div className="max-w-6xl mx-auto px-6 py-2 flex flex-col sm:flex-row items-center justify-between gap-2 text-sm">
-          <span className="text-slate-400 font-mono text-xs tracking-wide">Eleanor Abel — Mechanical Engineer</span>
-          <div className="flex items-center gap-5">
-            <a
-              href="mailto:eleanoroabel@gmail.com"
-              className="flex items-center gap-1.5 text-slate-400 hover:text-orange-400 transition-colors text-xs"
-            >
-              <Mail size={13} />
-              eleanoroabel@gmail.com
-            </a>
-            <a
-              href="https://www.linkedin.com/in/eleanor-abel-a6134b338"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-1.5 text-slate-400 hover:text-orange-400 transition-colors text-xs"
-            >
-              <Linkedin size={13} />
-              LinkedIn
-            </a>
-            <a
-              href="https://github.com/abele28"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-1.5 text-slate-400 hover:text-orange-400 transition-colors text-xs"
-            >
-              <Github size={13} />
-              GitHub
-            </a>
-          </div>
-        </div>
-      </div>
-
       {/* Navigation */}
-      <nav className={`fixed top-[41px] w-full z-40 transition-all duration-300 ${scrolled ? 'bg-slate-950/95 backdrop-blur border-b border-slate-800' : 'bg-transparent'}`}>
+      <nav className={`fixed top-0 w-full z-50 transition-all duration-300 ${scrolled ? 'bg-slate-950/95 backdrop-blur border-b border-slate-800' : 'bg-transparent'}`}>
         <div className="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
           <div className="text-xl font-bold tracking-tight">
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-orange-600">
-              ELEANOR
+              ELEANOR ABEL
             </span>
           </div>
           <div className="hidden md:flex gap-8 text-sm">
@@ -162,22 +128,22 @@ export default function Portfolio() {
         <div className="relative max-w-6xl mx-auto w-full">
           <div className="mb-6">
             <span className="inline-block px-3 py-1 rounded-full border border-orange-500/30 text-orange-400 text-xs font-mono tracking-wider">
-              ENGINEER → ATHLETE → BUILDER
+              VANDERBILT ME · NASA L'SPACE · AEROSPACE
             </span>
           </div>
 
           <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight tracking-tight">
-            Mechanical Engineer
+            Mechanical engineering student.
             <br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-orange-500 to-red-500">
-              with Aerospace Ambitions
+              Aerospace is the plan.
             </span>
           </h1>
 
           <p className="text-lg text-slate-400 mb-8 max-w-2xl leading-relaxed">
-            Vanderbilt sophomore designing thermal systems for Mars rovers, building custom engineering
-            solutions, and bringing ideas from sketches to reality. Former Division I athlete. Always
-            building something.
+            I've already designed thermal systems for a Mars cave rover through NASA L'SPACE — managing
+            everything from MLI to thermoelectric coolers at -125°C. That's the work I want to keep doing.
+            Vanderbilt sophomore. Former Division I athlete. Always building something.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 mb-16">
