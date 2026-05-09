@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { ChevronDown, Github } from 'lucide-react';
+import { ChevronDown, Github, Mail, Linkedin } from 'lucide-react';
 
 function Photo({ src, alt, className }) {
   const [error, setError] = useState(false);
@@ -88,8 +88,42 @@ export default function Portfolio() {
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 overflow-hidden">
+      {/* Contact bar */}
+      <div className="fixed top-0 w-full z-50 bg-slate-900/95 backdrop-blur border-b border-slate-800/60">
+        <div className="max-w-6xl mx-auto px-6 py-2 flex flex-col sm:flex-row items-center justify-between gap-2 text-sm">
+          <span className="text-slate-400 font-mono text-xs tracking-wide">Eleanor Abel — Mechanical Engineer</span>
+          <div className="flex items-center gap-5">
+            <a
+              href="mailto:eleanoroabel@gmail.com"
+              className="flex items-center gap-1.5 text-slate-400 hover:text-orange-400 transition-colors text-xs"
+            >
+              <Mail size={13} />
+              eleanoroabel@gmail.com
+            </a>
+            <a
+              href="https://www.linkedin.com/in/eleanor-abel-a6134b338"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-1.5 text-slate-400 hover:text-orange-400 transition-colors text-xs"
+            >
+              <Linkedin size={13} />
+              LinkedIn
+            </a>
+            <a
+              href="https://github.com/abele28"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-1.5 text-slate-400 hover:text-orange-400 transition-colors text-xs"
+            >
+              <Github size={13} />
+              GitHub
+            </a>
+          </div>
+        </div>
+      </div>
+
       {/* Navigation */}
-      <nav className={`fixed top-0 w-full z-50 transition-all duration-300 ${scrolled ? 'bg-slate-950/95 backdrop-blur border-b border-slate-800' : 'bg-transparent'}`}>
+      <nav className={`fixed top-[41px] w-full z-40 transition-all duration-300 ${scrolled ? 'bg-slate-950/95 backdrop-blur border-b border-slate-800' : 'bg-transparent'}`}>
         <div className="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
           <div className="text-xl font-bold tracking-tight">
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-orange-600">
@@ -161,12 +195,11 @@ export default function Portfolio() {
             </button>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-8 border-t border-slate-800">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-8 border-t border-slate-800">
             {[
-              { label: 'GPA', value: '3.93 / 4.00' },
-              { label: 'CSWA Certified', value: 'SolidWorks' },
               { label: 'Vanderbilt ME', value: 'Sophomore' },
               { label: 'DI Athlete', value: 'Union College Hockey' },
+              { label: "NASA L'SPACE", value: 'Student Thermal Engineer' },
             ].map((cred, i) => (
               <div key={i} className="pt-4">
                 <p className="text-xs text-orange-400 font-mono tracking-wider mb-1">{cred.label}</p>
