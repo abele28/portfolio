@@ -128,7 +128,7 @@ export default function Portfolio() {
         <div className="relative max-w-6xl mx-auto w-full">
           <div className="mb-6">
             <span className="inline-block px-3 py-1 rounded-full border border-orange-500/30 text-orange-400 text-xs font-mono tracking-wider">
-              VANDERBILT ME · NASA L'SPACE · AEROSPACE
+              ATHLETE · ENGINEER · INNOVATOR
             </span>
           </div>
 
@@ -140,11 +140,24 @@ export default function Portfolio() {
             </span>
           </h1>
 
-          <p className="text-lg text-slate-400 mb-8 max-w-2xl leading-relaxed">
-            I've already designed thermal systems for a Mars cave rover through NASA L'SPACE — managing
-            everything from MLI to thermoelectric coolers at -125°C. That's the work I want to keep doing.
-            Vanderbilt sophomore. Former Division I athlete. Always building something.
+          <p className="text-lg text-slate-400 mb-6 max-w-2xl leading-relaxed">
+            Vanderbilt ME sophomore. Designed thermal systems for a Mars cave rover through NASA L'SPACE.
+            Former Division I athlete. Aerospace is where I'm headed.
           </p>
+
+          <div className="flex items-center gap-5 mb-10 text-sm">
+            <a href="mailto:eleanoroabel@gmail.com" className="text-slate-400 hover:text-orange-400 transition-colors">
+              eleanoroabel@gmail.com
+            </a>
+            <span className="text-slate-700">·</span>
+            <a href="https://www.linkedin.com/in/eleanor-abel-a6134b338" target="_blank" rel="noopener noreferrer" className="text-slate-400 hover:text-orange-400 transition-colors">
+              LinkedIn
+            </a>
+            <span className="text-slate-700">·</span>
+            <a href="https://github.com/abele28" target="_blank" rel="noopener noreferrer" className="text-slate-400 hover:text-orange-400 transition-colors">
+              GitHub
+            </a>
+          </div>
 
           <div className="flex flex-col sm:flex-row gap-4 mb-16">
             <button
