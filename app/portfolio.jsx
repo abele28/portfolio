@@ -3,6 +3,56 @@
 import React, { useState, useEffect } from 'react';
 import { ChevronDown, Github } from 'lucide-react';
 
+function OrbitalAnimation() {
+  return (
+    <svg viewBox="0 0 500 460" width="100%" height="100%">
+      <defs>
+        <filter id="orbit-glow" x="-60%" y="-60%" width="220%" height="220%">
+          <feGaussianBlur stdDeviation="2.5" result="blur" />
+          <feMerge>
+            <feMergeNode in="blur" />
+            <feMergeNode in="SourceGraphic" />
+          </feMerge>
+        </filter>
+      </defs>
+
+      {/* Central body */}
+      <circle cx="250" cy="230" r="6" fill="#f97316" opacity="0.9" filter="url(#orbit-glow)" />
+      <circle cx="250" cy="230" r="16" fill="none" stroke="#f97316" strokeWidth="0.6" opacity="0.4" />
+
+      {/* Orbit 1 — inner, tilted -20° */}
+      <g transform="rotate(-20, 250, 230)">
+        <ellipse cx="250" cy="230" rx="75" ry="28" fill="none" stroke="#f97316" strokeWidth="0.7" strokeDasharray="4 4" opacity="0.55" />
+        <circle r="5.5" fill="#f97316" filter="url(#orbit-glow)" opacity="0.95">
+          <animateMotion dur="5s" repeatCount="indefinite"
+            path="M 175,230 a 75,28 0 1,1 150,0 a 75,28 0 1,1 -150,0"
+            rotate="none" />
+        </circle>
+      </g>
+
+      {/* Orbit 2 — mid, tilted +12° */}
+      <g transform="rotate(12, 250, 230)">
+        <ellipse cx="250" cy="230" rx="145" ry="52" fill="none" stroke="#fb923c" strokeWidth="0.55" strokeDasharray="5 7" opacity="0.35" />
+        <circle r="4" fill="#fb923c" filter="url(#orbit-glow)" opacity="0.85">
+          <animateMotion dur="9s" repeatCount="indefinite" begin="-3.5s"
+            path="M 105,230 a 145,52 0 1,1 290,0 a 145,52 0 1,1 -290,0"
+            rotate="none" />
+        </circle>
+      </g>
+
+      {/* Orbit 3 — outer, tilted -30° */}
+      <g transform="rotate(-30, 250, 230)">
+        <ellipse cx="250" cy="230" rx="215" ry="75" fill="none" stroke="#64748b" strokeWidth="0.45" strokeDasharray="3 9" opacity="0.2" />
+        <circle r="3.5" fill="#94a3b8" filter="url(#orbit-glow)" opacity="0.7">
+          <animateMotion dur="16s" repeatCount="indefinite" begin="-6s"
+            path="M 35,230 a 215,75 0 1,1 430,0 a 215,75 0 1,1 -430,0"
+            rotate="none" />
+        </circle>
+      </g>
+    </svg>
+  );
+}
+
 function Photo({ src, alt, className }) {
   const [error, setError] = useState(false);
   if (error) {
@@ -126,7 +176,7 @@ export default function Portfolio() {
       </nav>
 
       {/* Hero */}
-      <section className="relative pt-32 pb-20 px-6 min-h-screen flex flex-col justify-center">
+      <section className="relative pt-32 pb-20 px-6 min-h-screen flex flex-col justify-center overflow-hidden">
         <div className="absolute inset-0 overflow-hidden">
           <div className="absolute -top-40 -right-40 w-80 h-80 bg-orange-500/10 rounded-full blur-3xl"></div>
           <div className="absolute top-1/2 -left-40 w-80 h-80 bg-blue-500/5 rounded-full blur-3xl"></div>
@@ -138,6 +188,11 @@ export default function Portfolio() {
             </defs>
             <rect width="100%" height="100%" fill="url(#grid)" />
           </svg>
+        </div>
+
+        {/* Orbital animation — right side, desktop only */}
+        <div className="absolute right-[-60px] top-1/2 -translate-y-1/2 w-[540px] h-[540px] pointer-events-none hidden lg:block" style={{ opacity: 0.18 }}>
+          <OrbitalAnimation />
         </div>
 
         <div className="relative max-w-6xl mx-auto w-full">
@@ -189,11 +244,9 @@ export default function Portfolio() {
             </button>
           </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-8 border-t border-slate-800">
+          <div className="grid grid-cols-2 gap-4 pt-8 border-t border-slate-800" style={{ maxWidth: '360px' }}>
             {[
               { label: 'Vanderbilt ME', value: 'Sophomore' },
-              { label: 'DI Athlete', value: 'Union College Hockey' },
-              { label: "NASA L'SPACE", value: 'Student Thermal Engineer' },
               { label: 'NASA Langley', value: 'Incoming Intern' },
             ].map((cred, i) => (
               <div key={i} className="pt-4">
