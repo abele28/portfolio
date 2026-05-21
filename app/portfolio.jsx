@@ -61,7 +61,7 @@ function WindTunnelCanvas() {
         y: baseY,
         baseY,
         history: [],
-        alpha: 0.52 + 0.30 * Math.sin(frac * Math.PI),
+        alpha: 0.62 + 0.26 * Math.sin(frac * Math.PI),
       };
     });
 
@@ -78,9 +78,9 @@ function WindTunnelCanvas() {
           const tail = p.history[0];
           const head = p.history[p.history.length - 1];
           const grad = ctx.createLinearGradient(tail.x, tail.y, head.x, head.y);
-          grad.addColorStop(0,    'rgba(240,160,100,0)');
-          grad.addColorStop(0.45, `rgba(240,160,100,${p.alpha * 0.45})`);
-          grad.addColorStop(1,    `rgba(240,160,100,${p.alpha})`);
+          grad.addColorStop(0,    'rgba(160,165,172,0)');
+          grad.addColorStop(0.45, `rgba(160,165,172,${p.alpha * 0.45})`);
+          grad.addColorStop(1,    `rgba(160,165,172,${p.alpha})`);
           ctx.beginPath();
           ctx.moveTo(tail.x, tail.y);
           for (let i = 1; i < p.history.length; i++) ctx.lineTo(p.history[i].x, p.history[i].y);
@@ -92,7 +92,7 @@ function WindTunnelCanvas() {
         }
 
         p.history.push({ x: p.x, y: p.y });
-        if (p.history.length > 45) p.history.shift();
+        if (p.history.length > 120) p.history.shift();
 
         p.x += vx;
         p.y += vy;
