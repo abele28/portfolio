@@ -7,9 +7,8 @@ function Photo({ src, alt, className }) {
   const [error, setError] = useState(false);
   if (error) {
     return (
-      <div className={`bg-slate-800/50 border border-dashed border-slate-700 flex flex-col items-center justify-center text-slate-600 text-xs text-center p-4 gap-2 ${className}`}>
-        <span className="text-2xl">📷</span>
-        <span>{alt}</span>
+      <div className={`bg-slate-800/50 border border-dashed border-slate-700 flex items-center justify-center text-slate-600 text-xs text-center p-4 ${className}`}>
+        {alt}
       </div>
     );
   }
@@ -39,10 +38,9 @@ export default function Portfolio() {
       subtitle: 'NASA Langley Research Center — Hampton, VA',
       date: 'Summer 2026',
       description:
-        'Incoming intern at NASA Academy hosted at NASA Langley Research Center — the same facility where my grandfather worked in the wind tunnel. Looking forward to contributing to aerospace research at one of NASA\'s premier centers.',
+        'Incoming intern at NASA Academy at NASA Langley Research Center, starting summer 2026. Looking forward to contributing to aerospace research at one of NASA\'s flagship facilities.',
       tags: ['NASA', 'Aerospace Research', 'NASA Langley'],
       color: 'from-blue-500 to-indigo-600',
-      icon: '🛸',
       photo: null,
     },
     {
@@ -50,10 +48,9 @@ export default function Portfolio() {
       subtitle: 'Incora — Global Aerospace Hardware Distributor',
       date: 'May – June 2026',
       description:
-        'Interpreted engineering drawings for aerospace fasteners, clamps, and bearings to extract material specs, tolerances, and compliance requirements for supplier qualification. Analyzed O-ring specifications and compound data to identify compliant substitutes, achieving an estimated ~77% unit cost reduction. Screened 80+ South American vendors against AS9100 certification standards to support procurement decisions.',
-      tags: ['AS9100', 'Engineering Drawings', 'Supplier Qualification', 'O-Ring Analysis', 'Procurement', 'Aerospace Hardware'],
+        'Read engineering drawings for aerospace fasteners, clamps, and bearings to pull material specs, tolerances, and compliance data for supplier qualification. Analyzed O-ring specifications and compound data to identify compliant substitutes — estimated ~77% unit cost reduction. Screened 80+ South American vendors against AS9100 certification standards to support procurement decisions.',
+      tags: ['AS9100', 'Engineering Drawings', 'Supplier Qualification', 'O-Ring Analysis', 'Procurement'],
       color: 'from-yellow-500 to-amber-500',
-      icon: '⚙️',
       photo: null,
     },
     {
@@ -61,10 +58,9 @@ export default function Portfolio() {
       subtitle: "NASA L'SPACE Mission Concept Academy",
       date: 'Sept – Dec 2025',
       description:
-        "Designed a hybrid thermal management system for a Mars cave exploration rover, keeping components alive across surface temperature swings of -125°C to +20°C and 48-hour subsurface operations with zero solar input. Ran trade studies across passive retention, active heat generation, and heat rejection — evaluating MLI, PCM, loop heat pipes, radiators, and thermoelectric coolers. Modeled the full thermal network in MATLAB Simscape to verify performance across both operational modes. Part of a 15-person multidisciplinary team producing deliverables aligned with NASA proposal standards.",
+        'Designed a hybrid thermal management system for a Mars cave exploration rover — keeping hardware alive across surface temperature swings of -125°C to +20°C and 48-hour subsurface operations with zero solar input. Ran trade studies on MLI, PCM, loop heat pipes, radiators, and thermoelectric coolers. Modeled the full thermal network in MATLAB Simscape and verified performance across both operational modes. Part of a 15-person multidisciplinary team working to NASA proposal standards.',
       tags: ['MATLAB Simscape', 'Thermal Analysis', 'Systems Design', 'MLI / PCM', 'Trade Studies'],
       color: 'from-orange-500 to-red-500',
-      icon: '🚀',
       photo: null,
     },
     {
@@ -72,10 +68,9 @@ export default function Portfolio() {
       subtitle: 'Instrumentation & Controls — Nashville, TN',
       date: 'Jan 2026 – Present',
       description:
-        'Built a custom Wheatstone bridge circuit for strain gauge signal conditioning, then programmed a LabVIEW VI using state machine architecture to monitor and classify posture in real time. Integrated with NI DAQ hardware to process sensor data and trigger feedback via buzzer and on-screen alert. Produced full VI math derivations, uncertainty analysis, and circuit schematics.',
+        'Built a Wheatstone bridge circuit for strain gauge signal conditioning, then wrote a LabVIEW VI using state machine architecture to monitor and classify posture in real time. Integrated with NI DAQ hardware to trigger feedback via buzzer and on-screen alert. Full math derivations, uncertainty analysis, and circuit schematics.',
       tags: ['LabVIEW', 'NI DAQ', 'Wheatstone Bridge', 'Signal Processing', 'Circuit Design'],
       color: 'from-green-500 to-emerald-500',
-      icon: '📊',
       photo: null,
     },
     {
@@ -83,10 +78,9 @@ export default function Portfolio() {
       subtitle: 'Self-Designed Engineering Project — Dallas, TX',
       date: 'Apr 2025 – Jan 2026',
       description:
-        'Designed and modeled a wind tunnel in AutoCAD, simulated airflow in MATLAB Simscape/Simulink, and built an Arduino-based data acquisition system to measure lift and drag under controlled airflow conditions. Not a class assignment — just something I wanted to build.',
+        'Designed a wind tunnel in AutoCAD, modeled airflow in MATLAB Simscape/Simulink, and built an Arduino-based data acquisition system to measure lift and drag under controlled airflow conditions. This wasn\'t a class assignment — I just wanted to build it.',
       tags: ['AutoCAD', 'MATLAB Simscape', 'Simulink', 'Arduino', 'Aerodynamics', 'DAQ'],
       color: 'from-blue-500 to-cyan-500',
-      icon: '🌪️',
       photo: null,
     },
     {
@@ -94,10 +88,9 @@ export default function Portfolio() {
       subtitle: 'Mechanical Design & Automation — Schenectady, NY',
       date: 'Sept – Dec 2023',
       description:
-        'Designed the full mechanical assembly in SolidWorks and produced laser-cut fabrication files in AutoCAD. Programmed a SparkFun RedBoard in Arduino to coordinate servo motor actuation with motion sensor input for consistent, repeatable tape application. Built and documented the complete electromechanical circuit including a full wiring diagram.',
+        'Designed the full mechanical assembly in SolidWorks and produced laser-cut fabrication files in AutoCAD. Programmed a SparkFun RedBoard in Arduino to coordinate servo motor actuation with motion sensor input for consistent, repeatable tape application. Built and documented the complete electromechanical circuit.',
       tags: ['SolidWorks', 'AutoCAD', 'Arduino', 'Servo Control', 'Fabrication'],
       color: 'from-purple-500 to-pink-500',
-      icon: '🏒',
       photo: '/IMG_8329.jpeg',
     },
   ];
@@ -254,13 +247,10 @@ export default function Portfolio() {
                         </div>
                       )}
                       <div className="flex-1">
-                        <div className="flex items-start gap-4 mb-3">
-                          <span className="text-3xl">{project.icon}</span>
-                          <div>
-                            <h3 className="text-2xl font-bold mb-1">{project.title}</h3>
-                            <p className="text-orange-400 text-sm font-semibold">{project.subtitle}</p>
-                            {project.date && <p className="text-slate-500 text-xs mt-1 font-mono">{project.date}</p>}
-                          </div>
+                        <div className="mb-4">
+                          <h3 className="text-2xl font-bold mb-1">{project.title}</h3>
+                          <p className="text-orange-400 text-sm font-semibold">{project.subtitle}</p>
+                          {project.date && <p className="text-slate-500 text-xs mt-1 font-mono">{project.date}</p>}
                         </div>
                         <p className="text-slate-300 mb-4 leading-relaxed">{project.description}</p>
                         <div className="flex flex-wrap gap-2">
@@ -288,37 +278,42 @@ export default function Portfolio() {
           {/* ── About Me ── */}
           {activeTab === 'about' && (
             <div className="space-y-16">
-              {/* Bio + headshot */}
+              {/* Bio + photos */}
               <div className="flex flex-col md:flex-row gap-12 items-start">
-                <div className="md:w-64 flex-shrink-0">
+                <div className="md:w-64 flex-shrink-0 flex flex-col gap-4">
                   <img
                     src="/headshot.jpg"
                     alt="Eleanor Abel"
                     className="w-full aspect-square object-cover object-top rounded-xl"
                   />
+                  <Photo
+                    src="/IMG_1873.JPG"
+                    alt="Eleanor captaining the Ontario Hockey Academy"
+                    className="w-full h-44 object-cover object-top rounded-xl"
+                  />
                 </div>
                 <div className="flex-1 space-y-5 text-slate-300 text-lg leading-relaxed">
                   <p>
-                    I'm a mechanical engineering student at Vanderbilt with a minor in Education Studies
-                    and a serious focus on aerospace. My grandfather worked in the wind tunnel at NASA
-                    Langley — that was my first hint that this could be a life's work.
+                    I'm a mechanical engineering student at Vanderbilt, focused on aerospace, with a minor
+                    in Education Studies. My grandfather worked in the wind tunnel at NASA Langley — that
+                    was my first signal that this could be a real direction for me.
                   </p>
                   <p>
-                    My path hasn't been straight. I started at Union College in Schenectady as a Division I
-                    ice hockey player, then transferred to Vanderbilt to double down on engineering. That year
-                    carrying a full ME course load while playing at the D1 level taught me a lot about
-                    managing hard things at the same time.
+                    My path hasn't been a straight line. I started at Union College in Schenectady as a
+                    Division I hockey player, then transferred to Vanderbilt to go all-in on engineering.
+                    Carrying a full ME course load while competing at the D1 level taught me how to manage
+                    hard things at the same time — which turns out to be a useful skill.
                   </p>
                   <p>
-                    In the classroom: thermodynamics, dynamics, linear algebra, instrumentation. In the lab:
-                    thermal protection for Mars rovers, a wind tunnel I built from scratch, automated
-                    manufacturing systems. I also speak French at a professional level — something I actively
-                    used during my year captaining a Tier I hockey program in Cornwall, Ontario.
+                    Coursework: thermodynamics, dynamics, linear algebra, instrumentation. Lab work:
+                    thermal protection for Mars rovers, a wind tunnel I built myself, automated
+                    manufacturing systems. I also speak French at a professional level — I used it daily
+                    during my year captaining a Tier I hockey program in Cornwall, Ontario.
                   </p>
                   <p>
-                    What ties it together: I want to build things that matter. Whether that's a thermal system
-                    flying to Mars, a sensor that helps someone work better, or teaching the next generation
-                    of engineers to think clearly and build confidently.
+                    What drives all of it: I want to build things that matter. Thermal systems going to
+                    Mars, sensors that help people work better, teaching engineers to think clearly —
+                    same drive, different forms.
                   </p>
                 </div>
               </div>
@@ -436,6 +431,7 @@ export default function Portfolio() {
           {/* ── Fun Things ── */}
           {activeTab === 'fun' && (
             <div className="space-y-14">
+
               {/* Hockey */}
               <div>
                 <div className="flex flex-col md:flex-row gap-8 items-start mb-6">
@@ -450,19 +446,18 @@ export default function Portfolio() {
                     <h3 className="text-2xl font-bold mb-1">Hockey</h3>
                     <p className="text-orange-400 text-sm font-semibold mb-3">Player → Captain → Coach</p>
                     <p className="text-slate-300 leading-relaxed mb-4">
-                      Ice hockey has been a constant. I played Division I at Union College, then spent a year
-                      as captain of the Ontario Hockey Academy's Tier I program in Cornwall, Ontario — leading
-                      practices, managing game-day operations, and acting as the bridge between athletes and
-                      coaches. I still coach youth hockey and can't really imagine a life without ice time.
+                      Hockey has been a constant since I was a kid. I played D1 at Union College, then
+                      spent a year as captain of the Ontario Hockey Academy's Tier I program in Cornwall,
+                      Ontario — running practices, managing game day, and being the bridge between athletes
+                      and staff. I still coach youth hockey. It's not something I plan to stop.
                     </p>
                     <div className="flex flex-wrap gap-2">
-                      {["Union College NCAA DI", "Ontario Hockey Academy — Captain", "Youth Coaching"].map((t, i) => (
+                      {['Union College NCAA DI', 'Ontario Hockey Academy — Captain', 'Youth Coaching'].map((t, i) => (
                         <span key={i} className="px-3 py-1 rounded-full bg-slate-800 text-slate-300 text-xs font-mono">{t}</span>
                       ))}
                     </div>
                   </div>
                 </div>
-                {/* Second hockey photo */}
                 <div className="ml-0 md:ml-64 md:pl-8">
                   <img
                     src="/DSC_6512.jpeg"
@@ -473,7 +468,7 @@ export default function Portfolio() {
                 </div>
               </div>
 
-              {/* Athletics */}
+              {/* Running & Triathlon */}
               <div className="flex flex-col md:flex-row gap-8 items-start">
                 <div className="md:w-56 flex-shrink-0">
                   <img
@@ -484,15 +479,37 @@ export default function Portfolio() {
                 </div>
                 <div>
                   <h3 className="text-2xl font-bold mb-1">Running & Triathlon</h3>
-                  <p className="text-orange-400 text-sm font-semibold mb-3">Off-season doesn't really exist</p>
+                  <p className="text-orange-400 text-sm font-semibold mb-3">The off-season doesn't really exist</p>
                   <p className="text-slate-300 leading-relaxed">
                     The athlete mindset doesn't switch off when the season ends. Running, cycling, and
-                    triathlon are how I reset — and honestly where a lot of my best thinking happens.
+                    triathlon are how I reset between everything else — and honestly, it's where a lot
+                    of my best thinking happens.
                   </p>
                 </div>
               </div>
 
-              {/* Building */}
+              {/* Rubik's Cube */}
+              <div>
+                <h3 className="text-2xl font-bold mb-1">Rubik's Cubes</h3>
+                <p className="text-orange-400 text-sm font-semibold mb-3">Since age 9</p>
+                <p className="text-slate-300 leading-relaxed">
+                  I've been solving Rubik's cubes since I was 9. Started with the 3x3 and went from
+                  there. Something about it stuck — probably the same thing that makes me want to
+                  understand how systems work.
+                </p>
+              </div>
+
+              {/* Lego */}
+              <div>
+                <h3 className="text-2xl font-bold mb-1">Lego</h3>
+                <p className="text-orange-400 text-sm font-semibold mb-3">A lifelong thing</p>
+                <p className="text-slate-300 leading-relaxed">
+                  Lego has been a thing my whole life and I still build. It never really gets old —
+                  there's something satisfying about it that I don't think goes away.
+                </p>
+              </div>
+
+              {/* Always Building Something */}
               <div className="flex flex-col md:flex-row gap-8 items-start">
                 <div className="md:w-56 flex-shrink-0">
                   <img
@@ -505,28 +522,24 @@ export default function Portfolio() {
                   <h3 className="text-2xl font-bold mb-1">Always Building Something</h3>
                   <p className="text-orange-400 text-sm font-semibold mb-3">Wind tunnels, apps, whatever's next</p>
                   <p className="text-slate-300 leading-relaxed">
-                    The wind tunnel wasn't assigned. The workout tracker app wasn't either. There's a specific
-                    kind of satisfaction in making something real that didn't exist before — and I chase that
-                    feeling in whatever form it takes.
+                    The wind tunnel wasn't assigned. The workout tracker wasn't either. There's something
+                    specific about making a thing that didn't exist before — I chase that feeling in
+                    whatever form it shows up.
                   </p>
                 </div>
               </div>
 
               {/* French */}
-              <div className="flex flex-col md:flex-row gap-8 items-start">
-                <div className="md:w-56 flex-shrink-0 flex items-center justify-center h-32 rounded-xl bg-slate-900/50 border border-slate-800 text-5xl">
-                  🇫🇷
-                </div>
-                <div>
-                  <h3 className="text-2xl font-bold mb-1">French</h3>
-                  <p className="text-orange-400 text-sm font-semibold mb-3">Professional Proficiency — DFP Affaires B1</p>
-                  <p className="text-slate-300 leading-relaxed">
-                    I speak French at a professional level — something I actively used during my year in
-                    Cornwall, Ontario. It's not just a line on a resume; it's genuinely come in handy and
-                    is something I keep working on.
-                  </p>
-                </div>
+              <div>
+                <h3 className="text-2xl font-bold mb-1">French</h3>
+                <p className="text-orange-400 text-sm font-semibold mb-3">Professional Proficiency — DFP Affaires B1</p>
+                <p className="text-slate-300 leading-relaxed">
+                  I speak French at a professional level — I used it daily during my year in Cornwall,
+                  Ontario. It's not a resume line for me; it's something I actively maintain and
+                  keep working on.
+                </p>
               </div>
+
             </div>
           )}
         </div>
