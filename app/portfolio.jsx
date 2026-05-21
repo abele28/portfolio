@@ -217,117 +217,85 @@ function ProjectRow({ project, index, isOpen, onToggle }) {
 
 // ── World map (equirectangular projection, simplified continent polygons) ─────
 function WorldMap() {
-  const W = 740, H = 370;
-  const toXY = (lng, lat) => ({ x: (lng + 180) / 360 * W, y: (90 - lat) / 180 * H });
+  // Equirectangular mapping calibrated to image padding
+  const toP = (lng, lat) => ({
+    left: `${3.5 + (lng + 180) / 360 * 93}%`,
+    top:  `${9   + (90 - lat) / 180 * 80}%`,
+  });
 
-  // Simplified continent polygons — hand-computed key coastal points
-  const continents = [
-    // North America
-    "28,23 70,20 178,31 265,92 233,104 222,120 211,142 204,178 162,156 133,129 118,90 87,65 28,65",
-    // South America
-    "203,169 250,169 298,206 298,239 284,244 270,256 234,316 222,303 226,239 203,195",
-    // Europe (+ Scandinavia bump)
-    "348,117 371,117 396,113 430,104 439,96 434,87 424,43 412,37 391,41 370,55 360,61 348,85 353,100 360,113",
-    // Africa
-    "332,162 402,115 443,130 458,169 477,174 460,249 432,271 408,271 399,232 390,182 332,184",
-    // Asia
-    "424,43 530,39 660,39 715,54 670,104 622,139 589,169 577,184 567,174 556,140 505,147 473,119 453,169 440,119 424,104",
-    // Australia
-    "491,243 532,221 569,245 569,278 534,283 495,273",
+  // lx/ly: pixel offset for the label text from the dot center
+  const locations = [
+    { name: 'Canada',       sub: 'Lived · Cornwall, ON', lat: 45.02, lng: -74.73, lived: true,  lx: -62, ly: -15 },
+    { name: 'South Africa', sub: 'Lived',                lat: -30.0, lng: 25.0,   lived: true,  lx: 9,   ly: -15 },
+    { name: 'Czech Rep.',   sub: 'Prague',               lat: 50.08, lng: 14.43,  lived: false, lx: -58, ly: -15 },
+    { name: 'Austria',      sub: 'Vienna',               lat: 48.21, lng: 16.37,  lived: false, lx: 9,   ly: -5  },
+    { name: 'France',       sub: null,                   lat: 48.85, lng: 2.35,   lived: false, lx: -46, ly: -15 },
+    { name: 'Switzerland',  sub: null,                   lat: 46.8,  lng: 8.2,    lived: false, lx: -64, ly: 8   },
+    { name: 'Italy',        sub: 'Rome',                 lat: 41.9,  lng: 12.5,   lived: false, lx: 9,   ly: 8   },
+    { name: 'Mexico',       sub: null,                   lat: 19.4,  lng: -99.1,  lived: false, lx: -48, ly: -15 },
+    { name: 'Argentina',    sub: 'Buenos Aires',         lat: -34.6, lng: -58.4,  lived: false, lx: 9,   ly: -13 },
+    { name: 'Brazil',       sub: null,                   lat: -15.8, lng: -47.9,  lived: false, lx: 9,   ly: -13 },
   ];
-
-  // Visited locations
-  const visited = [
-    { name: 'Canada',       note: 'Cornwall, ON · 6 months', lat: 45.02, lng: -74.73, lived: true,  delay: 0    },
-    { name: 'South Africa', note: 'Lived',                   lat: -30.0, lng: 25.0,   lived: true,  delay: 0.5  },
-    { name: 'Czech Rep.',   note: 'Prague',                  lat: 50.08, lng: 14.43,  lived: false, delay: 1.0  },
-    { name: 'Austria',      note: 'Vienna',                  lat: 48.21, lng: 16.37,  lived: false, delay: 1.2  },
-    { name: 'France',       note: 'Visited',                 lat: 48.85, lng: 2.35,   lived: false, delay: 1.4  },
-    { name: 'Switzerland',  note: 'Visited',                 lat: 46.8,  lng: 8.2,    lived: false, delay: 1.6  },
-    { name: 'Italy',        note: 'Visited',                 lat: 41.9,  lng: 12.5,   lived: false, delay: 1.8  },
-    { name: 'Mexico',       note: 'Visited',                 lat: 19.4,  lng: -99.1,  lived: false, delay: 2.0  },
-    { name: 'Argentina',    note: 'Visited',                 lat: -34.6, lng: -58.4,  lived: false, delay: 2.2  },
-    { name: 'Brazil',       note: 'Visited',                 lat: -15.8, lng: -47.9,  lived: false, delay: 2.4  },
-  ];
-
-  const prague = toXY(14.43, 50.08);
-  const vienna = toXY(16.37, 48.21);
-  const lngGrid = [-150,-120,-90,-60,-30,0,30,60,90,120,150];
-  const latGrid = [60,30,-30,-60];
 
   return (
-    <div style={{ borderRadius: '8px', overflow: 'hidden', border: '1px solid #1A1A1E', background: '#09090D', position: 'relative' }}>
-      {/* World map image — white continents tinted over dark background */}
-      <img src="/world-map.jpg" alt="" aria-hidden="true" style={{
-        position: 'absolute', inset: 0, width: '100%', height: 'calc(100% - 41px)',
-        objectFit: 'fill', opacity: 0.14, pointerEvents: 'none', display: 'block',
-        filter: 'brightness(1.1)',
-      }} />
-      <svg viewBox={`0 0 ${W} ${H}`} width="100%" style={{ display: 'block', position: 'relative' }}>
-        {/* Grid lines */}
-        {lngGrid.map(lng => {
-          const x = (lng + 180) / 360 * W;
-          return <line key={lng} x1={x} y1={0} x2={x} y2={H} stroke="rgba(255,255,255,0.04)" strokeWidth="0.5" />;
-        })}
-        {latGrid.map(lat => {
-          const y = (90 - lat) / 180 * H;
-          return <line key={lat} x1={0} y1={y} x2={W} y2={y} stroke="rgba(255,255,255,0.04)" strokeWidth="0.5" />;
-        })}
-        {/* Equator slightly brighter */}
-        <line x1={0} y1={H / 2} x2={W} y2={H / 2} stroke="rgba(255,255,255,0.07)" strokeWidth="0.5" />
+    <div style={{ position: 'relative', borderRadius: '8px', overflow: 'hidden', border: '1px solid #1A1A1E' }}>
+      {/* Map image — darkened so orange labels pop */}
+      <img src="/world-map.jpg" alt="World map showing visited countries"
+        style={{ display: 'block', width: '100%', height: 'auto', filter: 'brightness(0.32)' }} />
 
-        {/* Continent polygons */}
-        {continents.map((pts, i) => (
-          <polygon key={i} points={pts} fill="#0E0E13" stroke="rgba(255,255,255,0.08)" strokeWidth="0.8" strokeLinejoin="round" />
-        ))}
-
-        {/* Prague → Vienna bike route */}
-        <line x1={prague.x} y1={prague.y} x2={vienna.x} y2={vienna.y}
-          stroke="#E85D26" strokeWidth="1.5" strokeDasharray="3,2.5" opacity="0.8" />
-        <text x={(prague.x + vienna.x) / 2 - 18} y={(prague.y + vienna.y) / 2 - 6}
-          fill="rgba(232,93,38,0.55)" fontSize="7" fontFamily="DM Mono,monospace" letterSpacing="0.3">
-          ~330 km · bike
-        </text>
-
-        {/* Visited dots */}
-        {visited.map(({ name, note, lat, lng, lived, delay }) => {
-          const { x, y } = toXY(lng, lat);
-          const r = lived ? 4 : 2.8;
-          const pr = lived ? 8.5 : 6;
-          return (
-            <g key={name}>
-              <circle cx={x} cy={y} r={r} fill="none" stroke="#E85D26" strokeWidth="0.8" opacity="0.4">
-                <animate attributeName="r" values={`${r};${pr};${r}`} dur="3s" begin={`${delay}s`} repeatCount="indefinite" />
-                <animate attributeName="opacity" values="0.4;0;0.4" dur="3s" begin={`${delay}s`} repeatCount="indefinite" />
-              </circle>
-              <circle cx={x} cy={y} r={r * 0.58} fill="#E85D26" opacity={lived ? 1 : 0.82}>
-                <title>{name} — {note}</title>
-              </circle>
-            </g>
-          );
-        })}
-      </svg>
-
-      {/* Legend */}
-      <div style={{ padding: '9px 14px 11px', borderTop: '1px solid #1A1A1E', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '12px', flexWrap: 'wrap' }}>
-        <div style={{ display: 'flex', gap: '18px', alignItems: 'center', flexWrap: 'wrap' }}>
-          {[
-            { size: 7, opacity: 1, label: 'Lived' },
-            { size: 5, opacity: 0.6, label: 'Visited' },
-          ].map(({ size, opacity, label }) => (
-            <div key={label} style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <div style={{ width: size, height: size, borderRadius: '50%', background: '#E85D26', opacity }} />
-              <span style={{ ...mono, fontSize: '9px', color: '#787672', letterSpacing: '0.12em', textTransform: 'uppercase' }}>{label}</span>
+      {/* Location pins + labels */}
+      {locations.map(({ name, sub, lat, lng, lived, lx, ly }) => {
+        const pos = toP(lng, lat);
+        return (
+          <div key={name} style={{ position: 'absolute', ...pos, transform: 'translate(-50%, -50%)', zIndex: 2 }}>
+            {/* Dot */}
+            <div style={{
+              width: lived ? 7 : 5,
+              height: lived ? 7 : 5,
+              borderRadius: '50%',
+              background: '#E85D26',
+              position: 'absolute',
+              top: '50%', left: '50%',
+              transform: 'translate(-50%,-50%)',
+              boxShadow: `0 0 ${lived ? 9 : 5}px rgba(232,93,38,${lived ? 0.85 : 0.55})`,
+            }} />
+            {/* Label */}
+            <div style={{ position: 'absolute', left: lx, top: ly, whiteSpace: 'nowrap' }}>
+              <span style={{
+                ...mono, fontSize: '8px', letterSpacing: '0.1em', textTransform: 'uppercase',
+                color: '#E85D26', display: 'block', lineHeight: 1.3,
+                fontWeight: lived ? 600 : 400,
+                textShadow: '0 1px 6px #09090B, 0 0 12px #09090B',
+              }}>
+                {name}
+              </span>
+              {sub && (
+                <span style={{
+                  ...mono, fontSize: '7px', color: 'rgba(232,93,38,0.55)',
+                  letterSpacing: '0.06em', display: 'block', lineHeight: 1.3,
+                  textShadow: '0 1px 6px #09090B',
+                }}>
+                  {sub}
+                </span>
+              )}
             </div>
-          ))}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-            <svg width="18" height="5" style={{ display: 'block' }}>
-              <line x1="0" y1="2.5" x2="18" y2="2.5" stroke="#E85D26" strokeWidth="1.4" strokeDasharray="3,2.5" opacity="0.8" />
-            </svg>
-            <span style={{ ...mono, fontSize: '9px', color: '#787672', letterSpacing: '0.12em', textTransform: 'uppercase' }}>Prague → Vienna</span>
           </div>
-        </div>
-        <span style={{ ...mono, fontSize: '9px', color: '#646466', letterSpacing: '0.08em' }}>10 countries · 4 continents</span>
+        );
+      })}
+
+      {/* Stats bar */}
+      <div style={{
+        position: 'absolute', bottom: 0, left: 0, right: 0,
+        padding: '8px 14px',
+        background: 'linear-gradient(to top, rgba(9,9,11,0.88), transparent)',
+        display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+      }}>
+        <span style={{ ...mono, fontSize: '9px', color: 'rgba(232,93,38,0.65)', letterSpacing: '0.1em', textTransform: 'uppercase' }}>
+          Prague → Vienna · ~330 km by bike
+        </span>
+        <span style={{ ...mono, fontSize: '9px', color: '#646466', letterSpacing: '0.08em' }}>
+          10 countries · 4 continents
+        </span>
       </div>
     </div>
   );
