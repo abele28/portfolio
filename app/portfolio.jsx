@@ -478,10 +478,10 @@ export default function Portfolio() {
                   </div>
                   <div style={{ flex: 1, minWidth: '260px', display: 'flex', flexDirection: 'column', gap: '18px' }}>
                     {[
-                      "I'm a mechanical engineering student at Vanderbilt, focused on aerospace, with a minor in Education Studies. My grandfather worked in the wind tunnel at NASA Langley — that was my first signal that this could be a real direction for me.",
-                      "My path hasn't been a straight line. I started at Union College in Schenectady as a D1 hockey player, then transferred to Vanderbilt to go all-in on engineering. Carrying a full ME course load while competing at the D1 level taught me how to manage hard things at the same time.",
-                      "Coursework: thermodynamics, dynamics, linear algebra, instrumentation. Lab work: thermal protection for Mars rovers, a wind tunnel I built myself, automated manufacturing systems. French at a professional level — used daily during my year captaining a Tier I program in Cornwall, Ontario.",
-                      "What drives all of it: I want to build things that matter. Same drive, different forms.",
+                      "I'm a mechanical engineering student at Vanderbilt, focused on aerospace, with a minor in Education Studies. I want to be part of a team sending people to space. That has been the goal for a while, and I've been building toward it.",
+                      "My path has not been straight. I committed to play Division I hockey at Union College, then transferred to Vanderbilt to go all in on engineering once I realized I wasn't being challenged academically. A friend told me to study anywhere else because Vanderbilt's program had a reputation for being impossibly hard. I thanked her and enrolled that afternoon. My first semester felt like those first practices at Union, where I was behind and had to figure out how to close the gap fast. I did it then and I did it again.",
+                      "Coursework: thermodynamics, dynamics, linear algebra, instrumentation. Lab work: thermal protection for Mars rovers, a wind tunnel I built from scratch, automated manufacturing systems. I also speak French at a professional level, something I used daily during my year captaining a Tier I hockey program in Cornwall, Ontario.",
+                      "The gap between who you are and who you want to be is not a reason to stop. It is the point. I am looking for the next thing that makes me better than I came in.",
                     ].map((p, i) => (
                       <p key={i} style={{ ...sans, fontSize: '15px', color: '#C0BEBC', lineHeight: 1.82, fontWeight: 300 }}>{p}</p>
                     ))}
