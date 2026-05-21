@@ -7,9 +7,9 @@ const serif = { fontFamily: 'var(--font-cormorant)' };
 const sans  = { fontFamily: 'var(--font-dm-sans)' };
 const mono  = { fontFamily: 'var(--font-dm-mono)' };
 
-// ── Animated streamline visualization ────────────────────────────────────────
-// Flowing particles with time-varying sinusoidal wave field.
-// No obstacle — pure animated streamlines that undulate across the full hero.
+// ── Wind tunnel flow visualization ────────────────────────────────────────────
+// Potential flow around an invisible elliptical body. Particles curve around
+// the obstacle naturally — you see the streamlines, not the body itself.
 function WindTunnelCanvas() {
   const canvasRef = useRef(null);
 
@@ -26,49 +26,61 @@ function WindTunnelCanvas() {
 
     const W = () => canvas.width;
     const H = () => canvas.height;
-    const U = 1.5; // horizontal speed
 
-    // Each particle gets a unique wave signature
-    const N = 210;
+    // Invisible body — particles curve around it, body is never drawn
+    const getBody = () => ({
+      cx: W() * 0.71,
+      cy: H() * 0.46,
+      a:  W() * 0.115,
+      b:  H() * 0.075,
+    });
+
+    const U = 1.4;
+
+    function vel(x, y, body) {
+      const { cx, cy, a, b } = body;
+      const dx = x - cx;
+      const dy = y - cy;
+      const en = (dx / a) * (dx / a) + (dy / b) * (dy / b);
+      if (en <= 1.02) return { vx: 0, vy: 0 };
+      const R2 = a * b;
+      const r2 = dx * dx + dy * dy;
+      const r4 = r2 * r2;
+      return {
+        vx: U * (1 - R2 * (dx * dx - dy * dy) / r4),
+        vy: -U * R2 * 2 * dx * dy / r4,
+      };
+    }
+
+    const N = 220;
     const particles = Array.from({ length: N }, (_, i) => {
       const frac = i / N;
-      const baseY = frac * (H() + 40) - 20 + (Math.random() - 0.5) * 3;
+      const baseY = frac * (H() + 40) - 20 + (Math.random() - 0.5) * 4;
       return {
         x: Math.random() * W(),
         y: baseY,
         baseY,
         history: [],
-        alpha: 0.55 + 0.30 * Math.sin(frac * Math.PI), // pale orange — clearly visible
-        phase: Math.random() * Math.PI * 2,             // unique wave offset
-        freq:  0.55 + Math.random() * 0.5,              // slightly varied frequency
-        amp:   0.25 + Math.random() * 0.45,             // varied amplitude
+        alpha: 0.52 + 0.30 * Math.sin(frac * Math.PI),
       };
     });
 
     let animId;
-    let t = 0;
 
     const frame = () => {
-      t++;
+      const body = getBody();
       ctx.clearRect(0, 0, W(), H());
 
       particles.forEach(p => {
-        // Horizontal flow + time-varying sinusoidal vertical component
-        // Two harmonics for more organic, complex wave shapes
-        const hf = Math.sin(Math.PI * (p.y / H())); // edge-to-center envelope
-        const vy = p.amp * hf * (
-          Math.sin(p.x / 115 * p.freq + t * 0.011 + p.phase) * 0.72 +
-          Math.sin(p.x / 52  * p.freq + t * 0.019 + p.phase * 1.6) * 0.28
-        );
+        const { vx, vy } = vel(p.x, p.y, body);
 
-        // Gradient trail: transparent tail → bright orange head
         if (p.history.length > 2) {
           const tail = p.history[0];
           const head = p.history[p.history.length - 1];
           const grad = ctx.createLinearGradient(tail.x, tail.y, head.x, head.y);
-          grad.addColorStop(0,   'rgba(240,160,100,0)');
-          grad.addColorStop(0.4,  `rgba(240,160,100,${p.alpha * 0.5})`);
-          grad.addColorStop(1,   `rgba(240,160,100,${p.alpha})`);
+          grad.addColorStop(0,    'rgba(240,160,100,0)');
+          grad.addColorStop(0.45, `rgba(240,160,100,${p.alpha * 0.45})`);
+          grad.addColorStop(1,    `rgba(240,160,100,${p.alpha})`);
           ctx.beginPath();
           ctx.moveTo(tail.x, tail.y);
           for (let i = 1; i < p.history.length; i++) ctx.lineTo(p.history[i].x, p.history[i].y);
@@ -80,19 +92,20 @@ function WindTunnelCanvas() {
         }
 
         p.history.push({ x: p.x, y: p.y });
-        if (p.history.length > 48) p.history.shift();
+        if (p.history.length > 45) p.history.shift();
 
-        p.x += U;
+        p.x += vx;
         p.y += vy;
 
-        // Reset off right edge or drifted too far vertically
-        if (p.x > W() + 15 || p.y < -30 || p.y > H() + 30) {
-          p.x = -10;
-          p.y = p.baseY + (Math.random() - 0.5) * 4;
+        const en = ((p.x - body.cx) / body.a) ** 2 + ((p.y - body.cy) / body.b) ** 2;
+        if (p.x > W() + 12 || p.x < -60 || p.y < -30 || p.y > H() + 30 || en < 0.88) {
+          p.x = -8;
+          p.y = p.baseY + (Math.random() - 0.5) * 5;
           p.history = [];
         }
       });
 
+      // Body is invisible — nothing drawn here
       animId = requestAnimationFrame(frame);
     };
 
