@@ -65,7 +65,7 @@ function WindTunnelCanvas() {
         baseY,
         history: [],
         // Brightest near the vertical center
-        alpha: 0.035 + 0.055 * Math.sin(frac * Math.PI),
+        alpha: 0.22 + 0.30 * Math.sin(frac * Math.PI),
       };
     });
 
@@ -73,32 +73,36 @@ function WindTunnelCanvas() {
 
     const frame = () => {
       const body = getBody();
-      // Subtle fade instead of clear — creates streamline trail effect
-      ctx.fillStyle = 'rgba(9,9,11,0.22)';
-      ctx.fillRect(0, 0, W(), H());
+      // Clear canvas each frame — trails drawn explicitly as gradient lines
+      ctx.clearRect(0, 0, W(), H());
 
       particles.forEach(p => {
         const { vx, vy } = vel(p.x, p.y, body);
 
-        if (p.history.length > 0) {
-          const prev = p.history[p.history.length - 1];
-          const speed = Math.sqrt(vx * vx + vy * vy);
-          const boost = Math.min(1, speed / U - 0.6);
+        // Draw full trail as a gradient polyline: transparent at tail, bright at head
+        if (p.history.length > 2) {
+          const tail = p.history[0];
+          const head = p.history[p.history.length - 1];
+          const grad = ctx.createLinearGradient(tail.x, tail.y, head.x, head.y);
+          grad.addColorStop(0, 'rgba(232,93,38,0)');
+          grad.addColorStop(0.6, `rgba(232,93,38,${p.alpha * 0.4})`);
+          grad.addColorStop(1, `rgba(232,93,38,${p.alpha})`);
           ctx.beginPath();
-          ctx.moveTo(prev.x, prev.y);
+          ctx.moveTo(tail.x, tail.y);
+          for (let i = 1; i < p.history.length; i++) ctx.lineTo(p.history[i].x, p.history[i].y);
           ctx.lineTo(p.x, p.y);
-          ctx.strokeStyle = `rgba(232,${85 + boost * 35},38,${p.alpha + boost * 0.04})`;
-          ctx.lineWidth = 0.65;
+          ctx.strokeStyle = grad;
+          ctx.lineWidth = 1.4;
+          ctx.lineCap = 'round';
           ctx.stroke();
         }
 
         p.history.push({ x: p.x, y: p.y });
-        if (p.history.length > 35) p.history.shift();
+        if (p.history.length > 40) p.history.shift();
 
         p.x += vx;
         p.y += vy;
 
-        // Check if inside body or off-screen → reset to left
         const en = ((p.x - body.cx) / body.a) ** 2 + ((p.y - body.cy) / body.b) ** 2;
         if (p.x > W() + 12 || p.x < -60 || p.y < -30 || p.y > H() + 30 || en < 0.88) {
           p.x = -8;
@@ -107,34 +111,48 @@ function WindTunnelCanvas() {
         }
       });
 
-      // Draw airfoil body
+      // Airfoil — outer glow, body fill, stroke
       const { cx, cy, a, b } = body;
+      ctx.beginPath();
+      ctx.ellipse(cx, cy, a + 8, b + 8, 0, 0, Math.PI * 2);
+      ctx.strokeStyle = 'rgba(232,93,38,0.07)';
+      ctx.lineWidth = 14;
+      ctx.stroke();
+
       ctx.beginPath();
       ctx.ellipse(cx, cy, a, b, 0, 0, Math.PI * 2);
       ctx.fillStyle = '#09090B';
       ctx.fill();
-      ctx.strokeStyle = 'rgba(232,93,38,0.22)';
-      ctx.lineWidth = 1;
+      ctx.strokeStyle = 'rgba(232,93,38,0.55)';
+      ctx.lineWidth = 1.5;
       ctx.stroke();
 
-      // Freestream arrow
-      ctx.strokeStyle = 'rgba(232,93,38,0.18)';
-      ctx.lineWidth = 0.8;
+      // Stagnation point at leading edge
       ctx.beginPath();
-      ctx.moveTo(cx - a - 40, cy);
-      ctx.lineTo(cx - a - 12, cy);
+      ctx.arc(cx - a, cy, 3.5, 0, Math.PI * 2);
+      ctx.fillStyle = '#E85D26';
+      ctx.fill();
+
+      // Freestream arrow (more visible)
+      ctx.strokeStyle = 'rgba(232,93,38,0.45)';
+      ctx.lineWidth = 1.2;
+      ctx.beginPath();
+      ctx.moveTo(cx - a - 48, cy);
+      ctx.lineTo(cx - a - 13, cy);
       ctx.stroke();
       ctx.beginPath();
-      ctx.moveTo(cx - a - 18, cy - 5);
-      ctx.lineTo(cx - a - 12, cy);
-      ctx.lineTo(cx - a - 18, cy + 5);
+      ctx.moveTo(cx - a - 21, cy - 7);
+      ctx.lineTo(cx - a - 13, cy);
+      ctx.lineTo(cx - a - 21, cy + 7);
       ctx.stroke();
 
-      // Engineering annotations
+      // Annotations
+      ctx.font = 'bold 10px "DM Mono", monospace';
+      ctx.fillStyle = 'rgba(232,93,38,0.55)';
+      ctx.fillText('V∞', cx - a - 65, cy - 8);
       ctx.font = '9px "DM Mono", monospace';
-      ctx.fillStyle = 'rgba(232,93,38,0.28)';
-      ctx.fillText('V∞', cx - a - 52, cy - 6);
-      ctx.fillText(`Re = 2.4 × 10⁵`, cx - a * 0.5, cy + b + 18);
+      ctx.fillStyle = 'rgba(232,93,38,0.4)';
+      ctx.fillText(`Re = 2.4 × 10⁵`, cx - a * 0.7, cy + b + 20);
 
       animId = requestAnimationFrame(frame);
     };
@@ -173,7 +191,7 @@ function Photo({ src, alt, style, className }) {
   if (err) {
     return (
       <div className={className} style={{ ...style, border: '1px dashed #2A2A2E', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        <span style={{ ...mono, fontSize: '10px', color: '#3A3A3E' }}>{alt}</span>
+        <span style={{ ...mono, fontSize: '10px', color: '#646466' }}>{alt}</span>
       </div>
     );
   }
@@ -196,11 +214,11 @@ function ProjectRow({ project, index, isOpen, onToggle }) {
           <h3 style={{ ...serif, fontSize: '22px', fontWeight: 600, color: isOpen ? '#E85D26' : '#EDEDEA', lineHeight: 1.2, transition: 'color 0.2s', marginBottom: '2px' }}>
             {project.title}
           </h3>
-          <p style={{ ...mono, fontSize: '10px', color: '#4A4A4E', letterSpacing: '0.05em', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+          <p style={{ ...mono, fontSize: '10px', color: '#78787C', letterSpacing: '0.05em', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
             {project.subtitle}
           </p>
         </div>
-        <span style={{ ...mono, fontSize: '11px', color: '#3A3A3E', flexShrink: 0, display: 'none' }} className="sm-date">
+        <span style={{ ...mono, fontSize: '11px', color: '#646466', flexShrink: 0, display: 'none' }} className="sm-date">
           {project.date}
         </span>
         <span style={{ ...mono, fontSize: '18px', color: '#E85D26', flexShrink: 0, width: '20px', textAlign: 'center', lineHeight: 1, transition: 'transform 0.3s', transform: isOpen ? 'rotate(45deg)' : 'rotate(0deg)' }}>
@@ -228,12 +246,12 @@ function ProjectRow({ project, index, isOpen, onToggle }) {
                 {project.date}
               </p>
             )}
-            <p style={{ ...sans, fontSize: '14px', color: '#9A9994', lineHeight: 1.8, fontWeight: 300, marginBottom: '16px' }}>
+            <p style={{ ...sans, fontSize: '14px', color: '#C0BEBC', lineHeight: 1.8, fontWeight: 300, marginBottom: '16px' }}>
               {project.description}
             </p>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
               {project.tags.map((tag, i) => (
-                <span key={i} style={{ ...mono, fontSize: '10px', letterSpacing: '0.1em', textTransform: 'uppercase', padding: '4px 10px', border: '1px solid #222226', color: '#4A4A4E', borderRadius: '4px' }}>
+                <span key={i} style={{ ...mono, fontSize: '10px', letterSpacing: '0.1em', textTransform: 'uppercase', padding: '4px 10px', border: '1px solid #222226', color: '#78787C', borderRadius: '4px' }}>
                   {tag}
                 </span>
               ))}
@@ -286,8 +304,14 @@ function WorldMap() {
   const latGrid = [60,30,-30,-60];
 
   return (
-    <div style={{ borderRadius: '8px', overflow: 'hidden', border: '1px solid #1A1A1E', background: '#09090D' }}>
-      <svg viewBox={`0 0 ${W} ${H}`} width="100%" style={{ display: 'block' }}>
+    <div style={{ borderRadius: '8px', overflow: 'hidden', border: '1px solid #1A1A1E', background: '#09090D', position: 'relative' }}>
+      {/* World map image — white continents tinted over dark background */}
+      <img src="/world-map.jpg" alt="" aria-hidden="true" style={{
+        position: 'absolute', inset: 0, width: '100%', height: 'calc(100% - 41px)',
+        objectFit: 'fill', opacity: 0.14, pointerEvents: 'none', display: 'block',
+        filter: 'brightness(1.1)',
+      }} />
+      <svg viewBox={`0 0 ${W} ${H}`} width="100%" style={{ display: 'block', position: 'relative' }}>
         {/* Grid lines */}
         {lngGrid.map(lng => {
           const x = (lng + 180) / 360 * W;
@@ -341,17 +365,17 @@ function WorldMap() {
           ].map(({ size, opacity, label }) => (
             <div key={label} style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
               <div style={{ width: size, height: size, borderRadius: '50%', background: '#E85D26', opacity }} />
-              <span style={{ ...mono, fontSize: '9px', color: '#484846', letterSpacing: '0.12em', textTransform: 'uppercase' }}>{label}</span>
+              <span style={{ ...mono, fontSize: '9px', color: '#787672', letterSpacing: '0.12em', textTransform: 'uppercase' }}>{label}</span>
             </div>
           ))}
           <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
             <svg width="18" height="5" style={{ display: 'block' }}>
               <line x1="0" y1="2.5" x2="18" y2="2.5" stroke="#E85D26" strokeWidth="1.4" strokeDasharray="3,2.5" opacity="0.8" />
             </svg>
-            <span style={{ ...mono, fontSize: '9px', color: '#484846', letterSpacing: '0.12em', textTransform: 'uppercase' }}>Prague → Vienna</span>
+            <span style={{ ...mono, fontSize: '9px', color: '#787672', letterSpacing: '0.12em', textTransform: 'uppercase' }}>Prague → Vienna</span>
           </div>
         </div>
-        <span style={{ ...mono, fontSize: '9px', color: '#3A3A3E', letterSpacing: '0.08em' }}>10 countries · 4 continents</span>
+        <span style={{ ...mono, fontSize: '9px', color: '#646466', letterSpacing: '0.08em' }}>10 countries · 4 continents</span>
       </div>
     </div>
   );
@@ -479,7 +503,7 @@ export default function Portfolio() {
             <div className="hidden md:flex" style={{ gap: '36px' }}>
               {tabs.map(t => (
                 <button key={t.id} onClick={() => switchTab(t.id)} className="nav-lnk"
-                  style={{ ...mono, fontSize: '10px', letterSpacing: '0.2em', textTransform: 'uppercase', background: 'none', border: 'none', cursor: 'pointer', color: activeTab === t.id ? '#E85D26' : '#525250' }}>
+                  style={{ ...mono, fontSize: '10px', letterSpacing: '0.2em', textTransform: 'uppercase', background: 'none', border: 'none', cursor: 'pointer', color: activeTab === t.id ? '#E85D26' : '#848280' }}>
                   {t.label}
                 </button>
               ))}
@@ -510,11 +534,11 @@ export default function Portfolio() {
 
             <div className="a3" style={{ height: '1px', maxWidth: '280px', background: 'linear-gradient(to right, rgba(232,93,38,0.65), rgba(232,93,38,0.2), transparent)', marginBottom: '22px' }} />
 
-            <p className="a3" style={{ ...sans, fontSize: '17px', color: '#7A7A76', fontWeight: 300, letterSpacing: '0.01em', marginBottom: '18px' }}>
+            <p className="a3" style={{ ...sans, fontSize: '17px', color: '#A8A6A2', fontWeight: 300, letterSpacing: '0.01em', marginBottom: '18px' }}>
               Aerospace-focused Mechanical Engineer
             </p>
 
-            <p className="a4" style={{ ...sans, fontSize: '15px', color: '#525250', fontWeight: 300, lineHeight: 1.78, maxWidth: '440px', marginBottom: '32px' }}>
+            <p className="a4" style={{ ...sans, fontSize: '15px', color: '#848280', fontWeight: 300, lineHeight: 1.78, maxWidth: '440px', marginBottom: '32px' }}>
               Vanderbilt ME rising junior. Designed thermal systems for a Mars cave rover through NASA L'SPACE. Former Division I athlete.
             </p>
 
@@ -527,7 +551,7 @@ export default function Portfolio() {
                 <React.Fragment key={i}>
                   {i > 0 && <span style={{ color: '#2A2A2A' }}>·</span>}
                   <a href={lk.href} target={lk.ext ? '_blank' : undefined} rel={lk.ext ? 'noopener noreferrer' : undefined}
-                    className="nav-lnk" style={{ ...mono, fontSize: '11px', color: '#484846', letterSpacing: '0.04em', textDecoration: 'none' }}>
+                    className="nav-lnk" style={{ ...mono, fontSize: '11px', color: '#787672', letterSpacing: '0.04em', textDecoration: 'none' }}>
                     {lk.label}
                   </a>
                 </React.Fragment>
@@ -571,7 +595,7 @@ export default function Portfolio() {
             <div style={{ display: 'flex', borderBottom: '1px solid #1A1A1E', marginBottom: '52px' }}>
               {tabs.map(t => (
                 <button key={t.id} onClick={() => setActiveTab(t.id)}
-                  style={{ ...mono, fontSize: '10px', letterSpacing: '0.2em', textTransform: 'uppercase', padding: '11px 22px', border: 'none', borderBottom: `2px solid ${activeTab === t.id ? '#E85D26' : 'transparent'}`, marginBottom: '-1px', background: 'transparent', cursor: 'pointer', color: activeTab === t.id ? '#E85D26' : '#484846', transition: 'color 0.2s, border-color 0.2s' }}>
+                  style={{ ...mono, fontSize: '10px', letterSpacing: '0.2em', textTransform: 'uppercase', padding: '11px 22px', border: 'none', borderBottom: `2px solid ${activeTab === t.id ? '#E85D26' : 'transparent'}`, marginBottom: '-1px', background: 'transparent', cursor: 'pointer', color: activeTab === t.id ? '#E85D26' : '#787672', transition: 'color 0.2s, border-color 0.2s' }}>
                   {t.label}
                 </button>
               ))}
@@ -581,7 +605,7 @@ export default function Portfolio() {
             {activeTab === 'projects' && (
               <div>
                 {/* Intro line */}
-                <p style={{ ...sans, fontSize: '13px', color: '#484846', fontWeight: 300, marginBottom: '32px', letterSpacing: '0.01em' }}>
+                <p style={{ ...sans, fontSize: '13px', color: '#787672', fontWeight: 300, marginBottom: '32px', letterSpacing: '0.01em' }}>
                   {projects.length} projects — click any to expand
                 </p>
 
@@ -598,7 +622,7 @@ export default function Portfolio() {
                   ))}
                 </div>
 
-                <p style={{ ...sans, fontSize: '13px', color: '#3A3A38', fontWeight: 300, marginTop: '28px' }}>
+                <p style={{ ...sans, fontSize: '13px', color: '#646462', fontWeight: 300, marginTop: '28px' }}>
                   <span style={{ color: '#E85D26' }}>Also in progress:</span>{' '}
                   A React-based workout tracking app. And always something new on the bench.
                 </p>
@@ -624,7 +648,7 @@ export default function Portfolio() {
                       "Coursework: thermodynamics, dynamics, linear algebra, instrumentation. Lab work: thermal protection for Mars rovers, a wind tunnel I built myself, automated manufacturing systems. French at a professional level — used daily during my year captaining a Tier I program in Cornwall, Ontario.",
                       "What drives all of it: I want to build things that matter. Same drive, different forms.",
                     ].map((p, i) => (
-                      <p key={i} style={{ ...sans, fontSize: '15px', color: '#8A8884', lineHeight: 1.82, fontWeight: 300 }}>{p}</p>
+                      <p key={i} style={{ ...sans, fontSize: '15px', color: '#C0BEBC', lineHeight: 1.82, fontWeight: 300 }}>{p}</p>
                     ))}
                   </div>
                 </div>
@@ -641,15 +665,15 @@ export default function Portfolio() {
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '12px', marginBottom: '8px', flexWrap: 'wrap' }}>
                           <div>
                             <h4 style={{ ...serif, fontSize: '20px', fontWeight: 600, color: '#EDEDEA', marginBottom: '2px' }}>{edu.school}</h4>
-                            <p style={{ ...sans, fontSize: '12px', color: '#484846' }}>{edu.location}</p>
+                            <p style={{ ...sans, fontSize: '12px', color: '#787672' }}>{edu.location}</p>
                           </div>
                           <span style={{ ...mono, fontSize: '10px', color: '#E85D26', flexShrink: 0, letterSpacing: '0.05em' }}>{edu.date}</span>
                         </div>
-                        <p style={{ ...sans, fontSize: '13px', color: '#6A6A66', marginBottom: '4px' }}>{edu.degree}</p>
-                        <p style={{ ...mono, fontSize: '10px', color: '#3A3A38', marginBottom: '14px', letterSpacing: '0.05em' }}>GPA {edu.gpa}</p>
+                        <p style={{ ...sans, fontSize: '13px', color: '#9E9C98', marginBottom: '4px' }}>{edu.degree}</p>
+                        <p style={{ ...mono, fontSize: '10px', color: '#646462', marginBottom: '14px', letterSpacing: '0.05em' }}>GPA {edu.gpa}</p>
                         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '5px' }}>
                           {edu.activities.map((a, j) => (
-                            <span key={j} style={{ ...mono, fontSize: '10px', letterSpacing: '0.08em', textTransform: 'uppercase', padding: '3px 9px', border: '1px solid #222226', color: '#3A3A38', borderRadius: '4px' }}>{a}</span>
+                            <span key={j} style={{ ...mono, fontSize: '10px', letterSpacing: '0.08em', textTransform: 'uppercase', padding: '3px 9px', border: '1px solid #222226', color: '#646462', borderRadius: '4px' }}>{a}</span>
                           ))}
                         </div>
                       </div>
@@ -673,7 +697,7 @@ export default function Portfolio() {
                           {items.map((item, j) => (
                             <li key={j} className="skill-item" style={{ display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
                               <span style={{ color: '#E85D26', marginTop: '2px', flexShrink: 0, fontSize: '11px' }}>—</span>
-                              <span style={{ ...sans, fontSize: '13px', color: '#6A6A66', fontWeight: 300, transition: 'color 0.2s' }}>{item}</span>
+                              <span style={{ ...sans, fontSize: '13px', color: '#9E9C98', fontWeight: 300, transition: 'color 0.2s' }}>{item}</span>
                             </li>
                           ))}
                         </ul>
@@ -684,7 +708,7 @@ export default function Portfolio() {
 
                 {/* Contact */}
                 <div style={{ paddingTop: '28px', borderTop: '1px solid #1A1A1E' }}>
-                  <p style={{ ...sans, fontSize: '14px', color: '#484846', marginBottom: '18px', fontWeight: 300 }}>
+                  <p style={{ ...sans, fontSize: '14px', color: '#787672', marginBottom: '18px', fontWeight: 300 }}>
                     Let's talk. Reach out if you're working on something interesting.
                   </p>
                   <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
@@ -694,13 +718,13 @@ export default function Portfolio() {
                     ].map((lk, i) => (
                       <a key={i} href={lk.href} target={lk.ext ? '_blank' : undefined} rel={lk.ext ? 'noopener noreferrer' : undefined}
                         className="contact-link"
-                        style={{ ...sans, fontSize: '13px', padding: '9px 22px', border: `1px solid ${i === 0 ? 'rgba(232,93,38,0.3)' : '#2A2A2E'}`, color: i === 0 ? '#E85D26' : '#6A6A66', borderRadius: '5px', textDecoration: 'none', transition: 'border-color 0.2s, color 0.2s' }}>
+                        style={{ ...sans, fontSize: '13px', padding: '9px 22px', border: `1px solid ${i === 0 ? 'rgba(232,93,38,0.3)' : '#2A2A2E'}`, color: i === 0 ? '#E85D26' : '#9E9C98', borderRadius: '5px', textDecoration: 'none', transition: 'border-color 0.2s, color 0.2s' }}>
                         {lk.label}
                       </a>
                     ))}
                     <a href="https://github.com/abele28" target="_blank" rel="noopener noreferrer"
                       className="contact-link"
-                      style={{ ...sans, fontSize: '13px', padding: '9px 22px', border: '1px solid #2A2A2E', color: '#6A6A66', borderRadius: '5px', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '7px', transition: 'border-color 0.2s, color 0.2s' }}>
+                      style={{ ...sans, fontSize: '13px', padding: '9px 22px', border: '1px solid #2A2A2E', color: '#9E9C98', borderRadius: '5px', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '7px', transition: 'border-color 0.2s, color 0.2s' }}>
                       <Github size={13} /> GitHub
                     </a>
                   </div>
@@ -718,8 +742,7 @@ export default function Portfolio() {
                     subtitle: 'Player → Captain → Coach',
                     body: 'Hockey has been a constant since I was a kid. I played D1 at Union College, then spent a year as captain of the Ontario Hockey Academy\'s Tier I program in Cornwall, Ontario — running practices, managing game day, being the bridge between athletes and staff. I still coach youth hockey.',
                     tags: ['Union College NCAA DI', 'Ontario Hockey Academy — Captain', 'Youth Coaching'],
-                    photo: '/IMG_1873.JPG',
-                    photo2: { src: '/DSC_6512.jpeg', caption: '#28 — Union College Women\'s Hockey' },
+                    photo: '/DSC_6512.jpeg',
                   },
                   {
                     title: 'Running & Triathlon',
@@ -768,13 +791,13 @@ export default function Portfolio() {
                         <p style={{ ...mono, fontSize: '10px', letterSpacing: '0.14em', textTransform: 'uppercase', color: '#E85D26', marginBottom: '14px' }}>
                           {item.subtitle}
                         </p>
-                        <p style={{ ...sans, fontSize: '14px', color: '#8A8884', lineHeight: 1.8, fontWeight: 300, maxWidth: '520px', marginBottom: item.tags ? '14px' : 0 }}>
+                        <p style={{ ...sans, fontSize: '14px', color: '#C0BEBC', lineHeight: 1.8, fontWeight: 300, maxWidth: '520px', marginBottom: item.tags ? '14px' : 0 }}>
                           {item.body}
                         </p>
                         {item.tags && (
                           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '5px' }}>
                             {item.tags.map((t, j) => (
-                              <span key={j} style={{ ...mono, fontSize: '10px', letterSpacing: '0.07em', textTransform: 'uppercase', padding: '3px 9px', border: '1px solid #222226', color: '#3A3A38', borderRadius: '4px' }}>{t}</span>
+                              <span key={j} style={{ ...mono, fontSize: '10px', letterSpacing: '0.07em', textTransform: 'uppercase', padding: '3px 9px', border: '1px solid #222226', color: '#646462', borderRadius: '4px' }}>{t}</span>
                             ))}
                           </div>
                         )}
@@ -790,7 +813,7 @@ export default function Portfolio() {
                       <div style={{ marginTop: '16px', paddingLeft: item.photo ? '224px' : '0' }}>
                         <img src={item.photo2.src} alt={item.photo2.caption}
                           style={{ width: '100%', maxWidth: '300px', height: '160px', objectFit: 'cover', objectPosition: 'top', borderRadius: '6px', border: '1px solid #1A1A1E' }} />
-                        <p style={{ ...mono, fontSize: '10px', color: '#3A3A38', marginTop: '6px', letterSpacing: '0.04em' }}>{item.photo2.caption}</p>
+                        <p style={{ ...mono, fontSize: '10px', color: '#646462', marginTop: '6px', letterSpacing: '0.04em' }}>{item.photo2.caption}</p>
                       </div>
                     )}
                   </div>
