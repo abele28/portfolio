@@ -132,6 +132,7 @@ function WindTunnelCanvas() {
   return (
     <canvas
       ref={canvasRef}
+      className="wt-canvas"
       style={{ position: 'absolute', inset: 0, width: '100%', height: '100%' }}
     />
   );
@@ -158,7 +159,7 @@ function ProjectRow({ project, index, isOpen, onToggle }) {
       onClick={onToggle}
     >
       {/* Collapsed header — always visible */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '16px', padding: '20px 0', transition: 'opacity 0.2s' }}>
+      <div className="proj-hdr" style={{ display: 'flex', alignItems: 'center', gap: '16px', padding: '20px 0', transition: 'opacity 0.2s' }}>
         <span style={{ ...mono, fontSize: '10px', color: '#E85D26', width: '28px', flexShrink: 0, letterSpacing: '0.05em' }}>
           {String(index + 1).padStart(2, '0')}
         </span>
@@ -184,7 +185,7 @@ function ProjectRow({ project, index, isOpen, onToggle }) {
         overflow: 'hidden',
         transition: 'max-height 0.45s cubic-bezier(0.16,1,0.3,1)',
       }}>
-        <div style={{ paddingLeft: '44px', paddingRight: '24px', paddingBottom: '28px', display: 'flex', flexDirection: 'row', gap: '24px', flexWrap: 'wrap' }}>
+        <div className="proj-expand" style={{ paddingLeft: '44px', paddingRight: '24px', paddingBottom: '28px', display: 'flex', flexDirection: 'row', gap: '24px', flexWrap: 'wrap' }}>
           {project.photo && (
             <Photo
               src={project.photo}
@@ -319,6 +320,25 @@ export default function Portfolio() {
         .contact-link:hover { border-color: rgba(232,93,38,0.5) !important; color: #E85D26 !important; }
         .skill-item:hover span:last-child { color: #C4C2BC !important; }
         @media (min-width: 640px) { .sm-date { display: block !important; } }
+
+        /* ── Mobile ── */
+        @media (max-width: 640px) {
+          .wt-canvas    { display: none !important; }
+          .hero-sec     { padding: 88px 20px 56px !important; }
+          .content-sec  { padding: 40px 16px 72px !important; }
+          .tab-bar      { overflow-x: auto; -webkit-overflow-scrolling: touch; gap: 0 !important; }
+          .tab-btn      { padding: 11px 16px !important; }
+          .about-row    { flex-direction: column !important; gap: 24px !important; }
+          .about-photos { width: 100% !important; flex-direction: row !important; gap: 10px !important; }
+          .about-photos > * { flex: 1 !important; height: 120px !important; }
+          .about-photos > * > img { height: 120px !important; }
+          .fun-row      { flex-direction: column !important; }
+          .fun-photo    { width: 100% !important; }
+          .fun-photo > img { height: 200px !important; width: 100% !important; }
+          .proj-expand  { padding-left: 20px !important; padding-right: 16px !important; }
+          .proj-hdr     { flex-wrap: wrap !important; gap: 8px !important; }
+          .hero-links   { gap: 12px !important; }
+        }
       `}</style>
 
       <div style={{ background: '#09090B', color: '#EDEDEA', minHeight: '100vh' }}>
@@ -347,7 +367,7 @@ export default function Portfolio() {
         </nav>
 
         {/* ── Hero ── */}
-        <section style={{ position: 'relative', minHeight: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '120px 24px 80px', overflow: 'hidden' }}>
+        <section className="hero-sec" style={{ position: 'relative', minHeight: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '120px 24px 80px', overflow: 'hidden' }}>
 
           {/* Wind tunnel canvas — full hero background */}
           <WindTunnelCanvas />
@@ -377,7 +397,7 @@ export default function Portfolio() {
               Vanderbilt ME rising junior. Designed thermal systems for a Mars cave rover through NASA L'SPACE. Former Division I athlete.
             </p>
 
-            <div className="a5" style={{ display: 'flex', alignItems: 'center', gap: '18px', marginBottom: '32px', flexWrap: 'wrap' }}>
+            <div className="a5 hero-links" style={{ display: 'flex', alignItems: 'center', gap: '18px', marginBottom: '32px', flexWrap: 'wrap' }}>
               {[
                 { label: 'eleanoroabel@gmail.com', href: 'mailto:eleanoroabel@gmail.com' },
                 { label: 'LinkedIn', href: 'https://www.linkedin.com/in/eleanor-abel-a6134b338', ext: true },
@@ -423,13 +443,13 @@ export default function Portfolio() {
         </section>
 
         {/* ── Tabbed content ── */}
-        <section id="content" style={{ padding: '72px 24px 120px' }}>
+        <section id="content" className="content-sec" style={{ padding: '72px 24px 120px' }}>
           <div style={{ maxWidth: '1152px', margin: '0 auto' }}>
 
             {/* Tab bar */}
-            <div style={{ display: 'flex', borderBottom: '1px solid #1A1A1E', marginBottom: '52px' }}>
+            <div className="tab-bar" style={{ display: 'flex', borderBottom: '1px solid #1A1A1E', marginBottom: '52px' }}>
               {tabs.map(t => (
-                <button key={t.id} onClick={() => setActiveTab(t.id)}
+                <button key={t.id} onClick={() => setActiveTab(t.id)} className="tab-btn"
                   style={{ ...mono, fontSize: '10px', letterSpacing: '0.2em', textTransform: 'uppercase', padding: '11px 22px', border: 'none', borderBottom: `2px solid ${activeTab === t.id ? '#E85D26' : 'transparent'}`, marginBottom: '-1px', background: 'transparent', cursor: 'pointer', color: activeTab === t.id ? '#E85D26' : '#787672', transition: 'color 0.2s, border-color 0.2s' }}>
                   {t.label}
                 </button>
@@ -469,8 +489,8 @@ export default function Portfolio() {
               <div style={{ display: 'flex', flexDirection: 'column', gap: '60px' }}>
 
                 {/* Bio + photos */}
-                <div style={{ display: 'flex', gap: '52px', alignItems: 'flex-start', flexWrap: 'wrap' }}>
-                  <div style={{ flexShrink: 0, width: '210px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                <div className="about-row" style={{ display: 'flex', gap: '52px', alignItems: 'flex-start', flexWrap: 'wrap' }}>
+                  <div className="about-photos" style={{ flexShrink: 0, width: '210px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
                     <img src="/headshot.jpg" alt="Eleanor Abel"
                       style={{ width: '100%', aspectRatio: '1/1', objectFit: 'cover', objectPosition: 'top', borderRadius: '7px' }} />
                     <Photo src="/IMG_1873.JPG" alt="Eleanor captaining the Ontario Hockey Academy"
@@ -611,9 +631,9 @@ export default function Portfolio() {
                     {/* Orange rule */}
                     <div style={{ width: '28px', height: '1px', background: '#E85D26', opacity: 0.55, marginBottom: '16px' }} />
 
-                    <div style={{ display: 'flex', flexDirection: 'row', gap: '36px', alignItems: 'flex-start', flexWrap: 'wrap' }}>
+                    <div className="fun-row" style={{ display: 'flex', flexDirection: 'row', gap: '36px', alignItems: 'flex-start', flexWrap: 'wrap' }}>
                       {item.photo && (
-                        <div style={{ flexShrink: 0, width: '188px' }}>
+                        <div className="fun-photo" style={{ flexShrink: 0, width: '188px' }}>
                           <img src={item.photo} alt={item.title}
                             style={{ width: '100%', height: '188px', objectFit: 'cover', objectPosition: 'top', borderRadius: '7px' }} />
                         </div>
