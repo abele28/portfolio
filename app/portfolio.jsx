@@ -3,78 +3,67 @@
 import React, { useState, useEffect } from 'react';
 import { ChevronDown, Github } from 'lucide-react';
 
+// ── Fonts ─────────────────────────────────────────────────────────────────────
+const serif  = { fontFamily: 'var(--font-cormorant)' };
+const sans   = { fontFamily: 'var(--font-dm-sans)' };
+const mono   = { fontFamily: 'var(--font-dm-mono)' };
+
+// ── Orbital animation ─────────────────────────────────────────────────────────
 function OrbitalAnimation() {
   return (
     <svg viewBox="0 0 500 460" width="100%" height="100%">
       <defs>
         <filter id="orbit-glow" x="-60%" y="-60%" width="220%" height="220%">
           <feGaussianBlur stdDeviation="2.5" result="blur" />
-          <feMerge>
-            <feMergeNode in="blur" />
-            <feMergeNode in="SourceGraphic" />
-          </feMerge>
+          <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
         </filter>
       </defs>
-
-      {/* Central body */}
-      <circle cx="250" cy="230" r="6" fill="#f97316" opacity="0.9" filter="url(#orbit-glow)" />
-      <circle cx="250" cy="230" r="16" fill="none" stroke="#f97316" strokeWidth="0.6" opacity="0.4" />
-
-      {/* Orbit 1 — inner, tilted -20° */}
+      <circle cx="250" cy="230" r="6" fill="#E85D26" opacity="0.9" filter="url(#orbit-glow)" />
+      <circle cx="250" cy="230" r="16" fill="none" stroke="#E85D26" strokeWidth="0.6" opacity="0.35" />
       <g transform="rotate(-20, 250, 230)">
-        <ellipse cx="250" cy="230" rx="75" ry="28" fill="none" stroke="#f97316" strokeWidth="0.7" strokeDasharray="4 4" opacity="0.55" />
-        <circle r="5.5" fill="#f97316" filter="url(#orbit-glow)" opacity="0.95">
-          <animateMotion dur="5s" repeatCount="indefinite"
-            path="M 175,230 a 75,28 0 1,1 150,0 a 75,28 0 1,1 -150,0"
-            rotate="none" />
+        <ellipse cx="250" cy="230" rx="75" ry="28" fill="none" stroke="#E85D26" strokeWidth="0.7" strokeDasharray="4 4" opacity="0.5" />
+        <circle r="5.5" fill="#E85D26" filter="url(#orbit-glow)" opacity="0.95">
+          <animateMotion dur="5s" repeatCount="indefinite" path="M 175,230 a 75,28 0 1,1 150,0 a 75,28 0 1,1 -150,0" rotate="none" />
         </circle>
       </g>
-
-      {/* Orbit 2 — mid, tilted +12° */}
       <g transform="rotate(12, 250, 230)">
-        <ellipse cx="250" cy="230" rx="145" ry="52" fill="none" stroke="#fb923c" strokeWidth="0.55" strokeDasharray="5 7" opacity="0.35" />
+        <ellipse cx="250" cy="230" rx="145" ry="52" fill="none" stroke="#fb923c" strokeWidth="0.55" strokeDasharray="5 7" opacity="0.32" />
         <circle r="4" fill="#fb923c" filter="url(#orbit-glow)" opacity="0.85">
-          <animateMotion dur="9s" repeatCount="indefinite" begin="-3.5s"
-            path="M 105,230 a 145,52 0 1,1 290,0 a 145,52 0 1,1 -290,0"
-            rotate="none" />
+          <animateMotion dur="9s" repeatCount="indefinite" begin="-3.5s" path="M 105,230 a 145,52 0 1,1 290,0 a 145,52 0 1,1 -290,0" rotate="none" />
         </circle>
       </g>
-
-      {/* Orbit 3 — outer, tilted -30° */}
       <g transform="rotate(-30, 250, 230)">
-        <ellipse cx="250" cy="230" rx="215" ry="75" fill="none" stroke="#64748b" strokeWidth="0.45" strokeDasharray="3 9" opacity="0.2" />
-        <circle r="3.5" fill="#94a3b8" filter="url(#orbit-glow)" opacity="0.7">
-          <animateMotion dur="16s" repeatCount="indefinite" begin="-6s"
-            path="M 35,230 a 215,75 0 1,1 430,0 a 215,75 0 1,1 -430,0"
-            rotate="none" />
+        <ellipse cx="250" cy="230" rx="215" ry="75" fill="none" stroke="#64748b" strokeWidth="0.45" strokeDasharray="3 9" opacity="0.18" />
+        <circle r="3.5" fill="#94a3b8" filter="url(#orbit-glow)" opacity="0.65">
+          <animateMotion dur="16s" repeatCount="indefinite" begin="-6s" path="M 35,230 a 215,75 0 1,1 430,0 a 215,75 0 1,1 -430,0" rotate="none" />
         </circle>
       </g>
     </svg>
   );
 }
 
+// ── Photo with fallback ───────────────────────────────────────────────────────
 function Photo({ src, alt, className }) {
   const [error, setError] = useState(false);
   if (error) {
     return (
-      <div className={`bg-slate-800/50 border border-dashed border-slate-700 flex items-center justify-center text-slate-600 text-xs text-center p-4 ${className}`}>
+      <div className={`border border-dashed border-[#2A2A2E] flex items-center justify-center text-[#3A3A3E] text-xs text-center p-4 ${className}`}>
         {alt}
       </div>
     );
   }
-  return (
-    <img src={src} alt={alt} className={className} onError={() => setError(true)} />
-  );
+  return <img src={src} alt={alt} className={className} onError={() => setError(true)} />;
 }
 
+// ── Main component ────────────────────────────────────────────────────────────
 export default function Portfolio() {
-  const [scrolled, setScrolled] = useState(false);
+  const [scrolled, setScrolled]   = useState(false);
   const [activeTab, setActiveTab] = useState('projects');
 
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 50);
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    const onScroll = () => setScrolled(window.scrollY > 60);
+    window.addEventListener('scroll', onScroll);
+    return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
   function switchTab(tab) {
@@ -87,521 +76,466 @@ export default function Portfolio() {
       title: 'NASA Academy Internship',
       subtitle: 'NASA Langley Research Center — Hampton, VA',
       date: 'Summer 2026',
-      description:
-        'Incoming intern at NASA Academy at NASA Langley Research Center, starting summer 2026. Looking forward to contributing to aerospace research at one of NASA\'s flagship facilities.',
+      description: 'Incoming intern at NASA Academy at NASA Langley Research Center, starting summer 2026. Looking forward to contributing to aerospace research at one of NASA\'s flagship facilities.',
       tags: ['NASA', 'Aerospace Research', 'NASA Langley'],
-      color: 'from-blue-500 to-indigo-600',
+      accent: '#3b7dd8',
       photo: null,
     },
     {
       title: 'Aerospace Supply Chain Engineering',
       subtitle: 'Incora — Global Aerospace Hardware Distributor',
       date: 'May – June 2026',
-      description:
-        'Read engineering drawings for aerospace fasteners, clamps, and bearings to pull material specs, tolerances, and compliance data for supplier qualification. Analyzed O-ring specifications and compound data to identify compliant substitutes — estimated ~77% unit cost reduction. Screened 80+ South American vendors against AS9100 certification standards to support procurement decisions.',
+      description: 'Read engineering drawings for aerospace fasteners, clamps, and bearings to pull material specs, tolerances, and compliance data for supplier qualification. Analyzed O-ring specifications and compound data to identify compliant substitutes — estimated ~77% unit cost reduction. Screened 80+ South American vendors against AS9100 certification standards to support procurement decisions.',
       tags: ['AS9100', 'Engineering Drawings', 'Supplier Qualification', 'O-Ring Analysis', 'Procurement'],
-      color: 'from-yellow-500 to-amber-500',
+      accent: '#E85D26',
       photo: null,
     },
     {
       title: 'Mars Rover Thermal Engineering',
       subtitle: "NASA L'SPACE Mission Concept Academy",
       date: 'Sept – Dec 2025',
-      description:
-        'Designed a hybrid thermal management system for a Mars cave exploration rover — keeping hardware alive across surface temperature swings of -125°C to +20°C and 48-hour subsurface operations with zero solar input. Ran trade studies on MLI, PCM, loop heat pipes, radiators, and thermoelectric coolers. Modeled the full thermal network in MATLAB Simscape and verified performance across both operational modes. Part of a 15-person multidisciplinary team working to NASA proposal standards.',
+      description: 'Designed a hybrid thermal management system for a Mars cave exploration rover — keeping hardware alive across surface temperature swings of -125°C to +20°C and 48-hour subsurface operations with zero solar input. Ran trade studies on MLI, PCM, loop heat pipes, radiators, and thermoelectric coolers. Modeled the full thermal network in MATLAB Simscape. Part of a 15-person multidisciplinary team working to NASA proposal standards.',
       tags: ['MATLAB Simscape', 'Thermal Analysis', 'Systems Design', 'MLI / PCM', 'Trade Studies'],
-      color: 'from-orange-500 to-red-500',
+      accent: '#E85D26',
       photo: null,
     },
     {
       title: 'Posture Sensor',
       subtitle: 'Instrumentation & Controls — Nashville, TN',
       date: 'Jan 2026 – Present',
-      description:
-        'Built a Wheatstone bridge circuit for strain gauge signal conditioning, then wrote a LabVIEW VI using state machine architecture to monitor and classify posture in real time. Integrated with NI DAQ hardware to trigger feedback via buzzer and on-screen alert. Full math derivations, uncertainty analysis, and circuit schematics.',
+      description: 'Built a Wheatstone bridge circuit for strain gauge signal conditioning, then wrote a LabVIEW VI using state machine architecture to monitor and classify posture in real time. Integrated with NI DAQ hardware to trigger feedback via buzzer and on-screen alert. Full math derivations, uncertainty analysis, and circuit schematics.',
       tags: ['LabVIEW', 'NI DAQ', 'Wheatstone Bridge', 'Signal Processing', 'Circuit Design'],
-      color: 'from-green-500 to-emerald-500',
+      accent: '#2eb87a',
       photo: null,
     },
     {
       title: 'Wind Tunnel & DAQ System',
       subtitle: 'Self-Designed Engineering Project — Dallas, TX',
       date: 'Apr 2025 – Jan 2026',
-      description:
-        'Designed a wind tunnel in AutoCAD, modeled airflow in MATLAB Simscape/Simulink, and built an Arduino-based data acquisition system to measure lift and drag under controlled airflow conditions. This wasn\'t a class assignment — I just wanted to build it.',
+      description: 'Designed a wind tunnel in AutoCAD, modeled airflow in MATLAB Simscape/Simulink, and built an Arduino-based data acquisition system to measure lift and drag under controlled airflow conditions. This wasn\'t a class assignment — I just wanted to build it.',
       tags: ['AutoCAD', 'MATLAB Simscape', 'Simulink', 'Arduino', 'Aerodynamics', 'DAQ'],
-      color: 'from-blue-500 to-cyan-500',
+      accent: '#3b7dd8',
       photo: null,
     },
     {
       title: 'Automated Hockey Stick Taping Device',
       subtitle: 'Mechanical Design & Automation — Schenectady, NY',
       date: 'Sept – Dec 2023',
-      description:
-        'Designed the full mechanical assembly in SolidWorks and produced laser-cut fabrication files in AutoCAD. Programmed a SparkFun RedBoard in Arduino to coordinate servo motor actuation with motion sensor input for consistent, repeatable tape application. Built and documented the complete electromechanical circuit.',
+      description: 'Designed the full mechanical assembly in SolidWorks and produced laser-cut fabrication files in AutoCAD. Programmed a SparkFun RedBoard in Arduino to coordinate servo motor actuation with motion sensor input for consistent, repeatable tape application. Built and documented the complete electromechanical circuit.',
       tags: ['SolidWorks', 'AutoCAD', 'Arduino', 'Servo Control', 'Fabrication'],
-      color: 'from-purple-500 to-pink-500',
+      accent: '#b56af5',
       photo: '/IMG_8329.jpeg',
     },
   ];
 
   const tabs = [
     { id: 'projects', label: 'Projects' },
-    { id: 'about', label: 'About Me' },
-    { id: 'fun', label: 'Fun Things' },
+    { id: 'about',    label: 'About Me' },
+    { id: 'fun',      label: 'Fun Things' },
   ];
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 overflow-hidden">
-      {/* Navigation */}
-      <nav className={`fixed top-0 w-full z-50 transition-all duration-300 ${scrolled ? 'bg-slate-950/95 backdrop-blur border-b border-slate-800' : 'bg-transparent'}`}>
-        <div className="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
-          <div className="text-xl font-bold tracking-tight">
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-orange-600">
-              ELEANOR ABEL
+    <>
+      <style>{`
+        @keyframes fadeUp {
+          from { opacity: 0; transform: translateY(22px); }
+          to   { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeIn {
+          from { opacity: 0; }
+          to   { opacity: 1; }
+        }
+        .a1 { animation: fadeUp 0.75s cubic-bezier(0.16,1,0.3,1) 0.05s both; }
+        .a2 { animation: fadeUp 0.75s cubic-bezier(0.16,1,0.3,1) 0.15s both; }
+        .a3 { animation: fadeUp 0.75s cubic-bezier(0.16,1,0.3,1) 0.25s both; }
+        .a4 { animation: fadeUp 0.75s cubic-bezier(0.16,1,0.3,1) 0.38s both; }
+        .a5 { animation: fadeUp 0.75s cubic-bezier(0.16,1,0.3,1) 0.50s both; }
+        .a6 { animation: fadeUp 0.75s cubic-bezier(0.16,1,0.3,1) 0.64s both; }
+        .orbital-wrap { animation: fadeIn 1.4s ease 0.3s both; }
+        .card-hover { transition: border-color 0.25s ease, background 0.25s ease; }
+        .card-hover:hover { background: #111114; }
+        .tag-chip { transition: border-color 0.2s, color 0.2s; }
+        .tag-chip:hover { border-color: #E85D26; color: #EDEDEA; }
+        .nav-link { transition: color 0.2s; }
+        .fun-rule { display: block; width: 32px; height: 1px; background: #E85D26; opacity: 0.5; margin-bottom: 14px; }
+      `}</style>
+
+      <div className="min-h-screen" style={{ background: '#09090B', color: '#EDEDEA' }}>
+
+        {/* ── Navigation ── */}
+        <nav style={{ position: 'fixed', top: 0, width: '100%', zIndex: 50, transition: 'all 0.4s ease', background: scrolled ? 'rgba(9,9,11,0.92)' : 'transparent', backdropFilter: scrolled ? 'blur(12px)' : 'none', borderBottom: scrolled ? '1px solid #1A1A1E' : '1px solid transparent' }}>
+          <div style={{ maxWidth: '1152px', margin: '0 auto', padding: '0 24px', height: '64px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <span style={{ ...serif, fontSize: '20px', fontWeight: 600, fontStyle: 'italic', color: '#EDEDEA', letterSpacing: '-0.01em' }}>
+              Eleanor Abel
             </span>
+            <div className="hidden md:flex" style={{ gap: '40px' }}>
+              {tabs.map(tab => (
+                <button key={tab.id} onClick={() => switchTab(tab.id)} className="nav-link"
+                  style={{ ...mono, fontSize: '10px', letterSpacing: '0.2em', textTransform: 'uppercase', color: activeTab === tab.id ? '#E85D26' : '#5A5A5E' }}>
+                  {tab.label}
+                </button>
+              ))}
+            </div>
           </div>
-          <div className="hidden md:flex gap-8 text-sm">
-            {tabs.map(tab => (
-              <button
-                key={tab.id}
-                onClick={() => switchTab(tab.id)}
-                className="hover:text-orange-400 transition"
-              >
-                {tab.label}
+        </nav>
+
+        {/* ── Hero ── */}
+        <section style={{ position: 'relative', minHeight: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '128px 24px 80px', overflow: 'hidden' }}>
+
+          {/* Background glow */}
+          <div style={{ position: 'absolute', inset: 0, overflow: 'hidden', pointerEvents: 'none' }}>
+            <div style={{ position: 'absolute', top: '-20%', right: '-10%', width: '600px', height: '600px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(232,93,38,0.06) 0%, transparent 70%)' }} />
+            <div style={{ position: 'absolute', bottom: '-10%', left: '-5%', width: '400px', height: '400px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(59,125,216,0.04) 0%, transparent 70%)' }} />
+            <svg style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', opacity: 0.022 }}>
+              <defs>
+                <pattern id="grid" width="44" height="44" patternUnits="userSpaceOnUse">
+                  <path d="M 44 0 L 0 0 0 44" fill="none" stroke="white" strokeWidth="0.5" />
+                </pattern>
+              </defs>
+              <rect width="100%" height="100%" fill="url(#grid)" />
+            </svg>
+          </div>
+
+          {/* Orbital — desktop right */}
+          <div className="orbital-wrap hidden lg:block" style={{ position: 'absolute', right: '-40px', top: '50%', transform: 'translateY(-50%)', width: '560px', height: '560px', opacity: 0.22, pointerEvents: 'none' }}>
+            <OrbitalAnimation />
+          </div>
+
+          <div style={{ position: 'relative', maxWidth: '1152px', margin: '0 auto', width: '100%' }}>
+
+            {/* Eyebrow */}
+            <div className="a1" style={{ marginBottom: '28px' }}>
+              <span style={{ ...mono, fontSize: '10px', letterSpacing: '0.22em', textTransform: 'uppercase', color: '#E85D26' }}>
+                Vanderbilt University · NASA Langley · 2026
+              </span>
+            </div>
+
+            {/* Name */}
+            <h1 className="a2" style={{ ...serif, fontSize: 'clamp(60px, 9.5vw, 108px)', lineHeight: 0.95, fontWeight: 600, fontStyle: 'italic', letterSpacing: '-0.015em', color: '#EDEDEA', marginBottom: '20px' }}>
+              Eleanor Abel
+            </h1>
+
+            {/* Rule */}
+            <div className="a3" style={{ height: '1px', maxWidth: '320px', background: 'linear-gradient(to right, rgba(232,93,38,0.7), rgba(232,93,38,0.2), transparent)', marginBottom: '20px' }} />
+
+            {/* Subtitle */}
+            <p className="a3" style={{ ...sans, fontSize: '18px', color: '#6A6A6E', fontWeight: 300, letterSpacing: '0.01em', marginBottom: '20px' }}>
+              Aerospace-focused Mechanical Engineer
+            </p>
+
+            {/* Description */}
+            <p className="a4" style={{ ...sans, fontSize: '15px', color: '#4E4E52', fontWeight: 300, lineHeight: 1.75, maxWidth: '480px', marginBottom: '32px' }}>
+              Vanderbilt ME sophomore. Designed thermal systems for a Mars cave rover through NASA L'SPACE. Former Division I athlete.
+            </p>
+
+            {/* Contact links */}
+            <div className="a5" style={{ display: 'flex', alignItems: 'center', gap: '20px', marginBottom: '36px', flexWrap: 'wrap' }}>
+              {[
+                { label: 'eleanoroabel@gmail.com', href: 'mailto:eleanoroabel@gmail.com' },
+                { label: 'LinkedIn', href: 'https://www.linkedin.com/in/eleanor-abel-a6134b338', external: true },
+                { label: 'GitHub', href: 'https://github.com/abele28', external: true },
+              ].map((link, i) => (
+                <React.Fragment key={i}>
+                  {i > 0 && <span style={{ color: '#2A2A2E' }}>·</span>}
+                  <a href={link.href} target={link.external ? '_blank' : undefined} rel={link.external ? 'noopener noreferrer' : undefined}
+                    className="nav-link" style={{ ...mono, fontSize: '11px', color: '#4E4E52', letterSpacing: '0.04em' }}>
+                    {link.label}
+                  </a>
+                </React.Fragment>
+              ))}
+            </div>
+
+            {/* CTA Buttons */}
+            <div className="a5" style={{ display: 'flex', gap: '12px', marginBottom: '56px', flexWrap: 'wrap' }}>
+              <button onClick={() => switchTab('projects')}
+                style={{ ...sans, padding: '11px 28px', fontSize: '14px', fontWeight: 500, background: '#E85D26', color: '#09090B', border: 'none', borderRadius: '6px', cursor: 'pointer', transition: 'background 0.2s' }}
+                onMouseOver={e => e.target.style.background = '#D04E1A'}
+                onMouseOut={e => e.target.style.background = '#E85D26'}>
+                See My Work
               </button>
-            ))}
-          </div>
-        </div>
-      </nav>
-
-      {/* Hero */}
-      <section className="relative pt-32 pb-20 px-6 min-h-screen flex flex-col justify-center overflow-hidden">
-        <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute -top-40 -right-40 w-80 h-80 bg-orange-500/10 rounded-full blur-3xl"></div>
-          <div className="absolute top-1/2 -left-40 w-80 h-80 bg-blue-500/5 rounded-full blur-3xl"></div>
-          <svg className="absolute inset-0 w-full h-full opacity-[0.03]" preserveAspectRatio="none">
-            <defs>
-              <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
-                <path d="M 40 0 L 0 0 0 40" fill="none" stroke="currentColor" strokeWidth="0.5" />
-              </pattern>
-            </defs>
-            <rect width="100%" height="100%" fill="url(#grid)" />
-          </svg>
-        </div>
-
-        {/* Orbital animation — right side, desktop only */}
-        <div className="absolute right-[-60px] top-1/2 -translate-y-1/2 w-[540px] h-[540px] pointer-events-none hidden lg:block" style={{ opacity: 0.18 }}>
-          <OrbitalAnimation />
-        </div>
-
-        <div className="relative max-w-6xl mx-auto w-full">
-          <div className="mb-6">
-            <span className="inline-block px-3 py-1 rounded-full border border-orange-500/30 text-orange-400 text-xs font-mono tracking-wider">
-              ATHLETE · ENGINEER · INNOVATOR
-            </span>
-          </div>
-
-          <h1 className="text-5xl md:text-6xl font-bold mb-6 leading-tight tracking-tight">
-            Aerospace-focused
-            <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-orange-500 to-red-500">
-              Mechanical Engineer.
-            </span>
-          </h1>
-
-          <p className="text-lg text-slate-400 mb-6 max-w-2xl leading-relaxed">
-            Vanderbilt ME sophomore. Designed thermal systems for a Mars cave rover through NASA L'SPACE.
-            Former Division I athlete. Aerospace is where I'm headed.
-          </p>
-
-          <div className="flex items-center gap-5 mb-10 text-sm">
-            <a href="mailto:eleanoroabel@gmail.com" className="text-slate-400 hover:text-orange-400 transition-colors">
-              eleanoroabel@gmail.com
-            </a>
-            <span className="text-slate-700">·</span>
-            <a href="https://www.linkedin.com/in/eleanor-abel-a6134b338" target="_blank" rel="noopener noreferrer" className="text-slate-400 hover:text-orange-400 transition-colors">
-              LinkedIn
-            </a>
-            <span className="text-slate-700">·</span>
-            <a href="https://github.com/abele28" target="_blank" rel="noopener noreferrer" className="text-slate-400 hover:text-orange-400 transition-colors">
-              GitHub
-            </a>
-          </div>
-
-          <div className="flex flex-col sm:flex-row gap-4 mb-16">
-            <button
-              onClick={() => switchTab('projects')}
-              className="px-6 py-3 bg-gradient-to-r from-orange-500 to-orange-600 rounded-lg font-semibold hover:shadow-lg hover:shadow-orange-500/30 transition-all text-center"
-            >
-              See My Work
-            </button>
-            <button
-              onClick={() => switchTab('about')}
-              className="px-6 py-3 border border-slate-700 rounded-lg font-semibold hover:border-orange-400 hover:text-orange-400 transition-all text-center"
-            >
-              Get to Know Me
-            </button>
-          </div>
-
-          <div className="grid grid-cols-2 gap-4 pt-8 border-t border-slate-800" style={{ maxWidth: '360px' }}>
-            {[
-              { label: 'Vanderbilt ME', value: 'Sophomore' },
-              { label: 'NASA Langley', value: 'Incoming Intern' },
-            ].map((cred, i) => (
-              <div key={i} className="pt-4">
-                <p className="text-xs text-orange-400 font-mono tracking-wider mb-1">{cred.label}</p>
-                <p className="text-slate-300 font-semibold">{cred.value}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce text-slate-600">
-          <ChevronDown size={24} />
-        </div>
-      </section>
-
-      {/* Tabbed Content */}
-      <section id="content" className="relative py-20 px-6">
-        <div className="max-w-6xl mx-auto">
-          {/* Tab bar */}
-          <div className="flex gap-2 mb-12 border-b border-slate-800">
-            {tabs.map(tab => (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={`px-6 py-3 font-semibold text-sm transition-all border-b-2 -mb-px ${
-                  activeTab === tab.id
-                    ? 'border-orange-500 text-orange-400'
-                    : 'border-transparent text-slate-400 hover:text-slate-200'
-                }`}
-              >
-                {tab.label}
+              <button onClick={() => switchTab('about')}
+                style={{ ...sans, padding: '11px 28px', fontSize: '14px', fontWeight: 400, background: 'transparent', color: '#EDEDEA', border: '1px solid #2A2A2E', borderRadius: '6px', cursor: 'pointer', transition: 'border-color 0.2s' }}
+                onMouseOver={e => e.target.style.borderColor = '#E85D26'}
+                onMouseOut={e => e.target.style.borderColor = '#2A2A2E'}>
+                About Me
               </button>
-            ))}
+            </div>
+
+            {/* Current credentials */}
+            <div className="a6" style={{ display: 'flex', gap: '48px', paddingTop: '28px', borderTop: '1px solid #1A1A1E', flexWrap: 'wrap' }}>
+              {[
+                { label: 'Currently at', value: 'Vanderbilt University' },
+                { label: 'Incoming intern', value: 'NASA Langley Research Center' },
+              ].map((item, i) => (
+                <div key={i}>
+                  <p style={{ ...mono, fontSize: '10px', letterSpacing: '0.18em', textTransform: 'uppercase', color: '#E85D26', marginBottom: '5px' }}>{item.label}</p>
+                  <p style={{ ...sans, fontSize: '14px', color: '#EDEDEA', fontWeight: 400 }}>{item.value}</p>
+                </div>
+              ))}
+            </div>
           </div>
 
-          {/* ── Projects ── */}
-          {activeTab === 'projects' && (
-            <div className="space-y-6">
-              {projects.map((project, index) => (
-                <div key={index} className="group relative">
-                  <div className="relative overflow-hidden rounded-xl border border-slate-800 hover:border-slate-700 transition-all duration-300 bg-slate-900/50">
-                    <div className={`absolute inset-0 opacity-0 group-hover:opacity-5 transition-opacity duration-300 bg-gradient-to-r ${project.color}`}></div>
-                    <div className="relative p-8 flex flex-col md:flex-row gap-8">
+          <div style={{ position: 'absolute', bottom: '32px', left: '50%', transform: 'translateX(-50%)', color: '#2A2A2E' }} className="animate-bounce">
+            <ChevronDown size={20} />
+          </div>
+        </section>
+
+        {/* ── Tabbed content ── */}
+        <section id="content" style={{ padding: '80px 24px 120px' }}>
+          <div style={{ maxWidth: '1152px', margin: '0 auto' }}>
+
+            {/* Tab bar */}
+            <div style={{ display: 'flex', borderBottom: '1px solid #1A1A1E', marginBottom: '56px' }}>
+              {tabs.map(tab => (
+                <button key={tab.id} onClick={() => setActiveTab(tab.id)}
+                  style={{ ...mono, fontSize: '10px', letterSpacing: '0.2em', textTransform: 'uppercase', padding: '12px 24px', border: 'none', borderBottom: `2px solid ${activeTab === tab.id ? '#E85D26' : 'transparent'}`, marginBottom: '-1px', background: 'transparent', cursor: 'pointer', color: activeTab === tab.id ? '#E85D26' : '#4E4E52', transition: 'color 0.2s, border-color 0.2s' }}>
+                  {tab.label}
+                </button>
+              ))}
+            </div>
+
+            {/* ── Projects ── */}
+            {activeTab === 'projects' && (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                {projects.map((project, idx) => (
+                  <div key={idx} className="card-hover" style={{ position: 'relative', border: '1px solid #1A1A1E', borderRadius: '8px', overflow: 'hidden', background: '#0D0D10' }}>
+                    {/* Left accent bar */}
+                    <div style={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: '2px', background: `linear-gradient(to bottom, ${project.accent}, transparent)`, opacity: 0.8 }} />
+                    <div style={{ padding: '28px 32px 28px 36px', display: 'flex', flexDirection: 'row', gap: '32px' }}>
                       {project.photo && (
-                        <div className="md:w-56 flex-shrink-0">
-                          <Photo
-                            src={project.photo}
-                            alt={`Photo of ${project.title}`}
-                            className="w-full h-40 object-cover rounded-lg"
-                          />
+                        <div style={{ flexShrink: 0, width: '200px' }}>
+                          <Photo src={project.photo} alt={`Photo of ${project.title}`} className="w-full h-36 object-cover rounded" />
                         </div>
                       )}
-                      <div className="flex-1">
-                        <div className="mb-4">
-                          <h3 className="text-2xl font-bold mb-1">{project.title}</h3>
-                          <p className="text-orange-400 text-sm font-semibold">{project.subtitle}</p>
-                          {project.date && <p className="text-slate-500 text-xs mt-1 font-mono">{project.date}</p>}
+                      <div style={{ flex: 1 }}>
+                        {/* Header row */}
+                        <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '16px', marginBottom: '10px' }}>
+                          <div>
+                            <h3 style={{ ...serif, fontSize: '24px', fontWeight: 600, color: '#EDEDEA', lineHeight: 1.15, marginBottom: '4px' }}>{project.title}</h3>
+                            <p style={{ ...sans, fontSize: '12px', color: '#E85D26', fontWeight: 400, letterSpacing: '0.01em' }}>{project.subtitle}</p>
+                          </div>
+                          {project.date && (
+                            <span style={{ ...mono, fontSize: '11px', color: '#3A3A3E', whiteSpace: 'nowrap', marginTop: '3px', flexShrink: 0 }}>{project.date}</span>
+                          )}
                         </div>
-                        <p className="text-slate-300 mb-4 leading-relaxed">{project.description}</p>
-                        <div className="flex flex-wrap gap-2">
+                        {/* Description */}
+                        <p style={{ ...sans, fontSize: '14px', color: '#5A5A5E', lineHeight: 1.75, fontWeight: 300, marginBottom: '18px' }}>{project.description}</p>
+                        {/* Tags */}
+                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
                           {project.tags.map((tag, i) => (
-                            <span key={i} className="px-3 py-1 rounded-full bg-slate-800 text-slate-300 text-xs font-mono">
-                              {tag}
-                            </span>
+                            <span key={i} className="tag-chip" style={{ ...mono, fontSize: '10px', letterSpacing: '0.1em', textTransform: 'uppercase', padding: '4px 10px', border: '1px solid #222226', color: '#3A3A3E', borderRadius: '4px' }}>{tag}</span>
                           ))}
                         </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                ))}
 
-              <div className="p-6 rounded-xl border border-slate-800 bg-slate-900/50">
-                <p className="text-slate-300">
-                  <span className="text-orange-400 font-semibold">Also in progress:</span>{' '}
-                  A React-based workout tracking app. And always something new on the bench.
-                </p>
-              </div>
-            </div>
-          )}
-
-          {/* ── About Me ── */}
-          {activeTab === 'about' && (
-            <div className="space-y-16">
-              {/* Bio + photos */}
-              <div className="flex flex-col md:flex-row gap-12 items-start">
-                <div className="md:w-64 flex-shrink-0 flex flex-col gap-4">
-                  <img
-                    src="/headshot.jpg"
-                    alt="Eleanor Abel"
-                    className="w-full aspect-square object-cover object-top rounded-xl"
-                  />
-                  <Photo
-                    src="/IMG_1873.JPG"
-                    alt="Eleanor captaining the Ontario Hockey Academy"
-                    className="w-full h-44 object-cover object-top rounded-xl"
-                  />
-                </div>
-                <div className="flex-1 space-y-5 text-slate-300 text-lg leading-relaxed">
-                  <p>
-                    I'm a mechanical engineering student at Vanderbilt, focused on aerospace, with a minor
-                    in Education Studies. My grandfather worked in the wind tunnel at NASA Langley — that
-                    was my first signal that this could be a real direction for me.
-                  </p>
-                  <p>
-                    My path hasn't been a straight line. I started at Union College in Schenectady as a
-                    Division I hockey player, then transferred to Vanderbilt to go all-in on engineering.
-                    Carrying a full ME course load while competing at the D1 level taught me how to manage
-                    hard things at the same time — which turns out to be a useful skill.
-                  </p>
-                  <p>
-                    Coursework: thermodynamics, dynamics, linear algebra, instrumentation. Lab work:
-                    thermal protection for Mars rovers, a wind tunnel I built myself, automated
-                    manufacturing systems. I also speak French at a professional level — I used it daily
-                    during my year captaining a Tier I hockey program in Cornwall, Ontario.
-                  </p>
-                  <p>
-                    What drives all of it: I want to build things that matter. Thermal systems going to
-                    Mars, sensors that help people work better, teaching engineers to think clearly —
-                    same drive, different forms.
+                {/* Also in progress */}
+                <div style={{ padding: '20px 24px', border: '1px solid #1A1A1E', borderRadius: '8px', background: '#0D0D10' }}>
+                  <p style={{ ...sans, fontSize: '14px', color: '#3A3A3E', fontWeight: 300 }}>
+                    <span style={{ color: '#E85D26', fontWeight: 500 }}>Also in progress:</span>{' '}
+                    A React-based workout tracking app. And always something new on the bench.
                   </p>
                 </div>
               </div>
+            )}
 
-              {/* Education */}
-              <div>
-                <h3 className="text-2xl font-bold mb-6 text-orange-400">Education</h3>
-                <div className="space-y-4">
-                  {[
-                    {
-                      school: 'Vanderbilt University',
-                      location: 'Nashville, TN',
-                      degree: 'Bachelor of Engineering, Mechanical Engineering',
-                      gpa: '3.93 / 4.00',
-                      date: 'Aug 2025 – Present',
-                      activities: ['NROTC', 'Society of Women Engineers', 'Engineers Without Borders'],
-                    },
-                    {
-                      school: 'Union College',
-                      location: 'Schenectady, NY',
-                      degree: 'Bachelor of Engineering, Mechanical Engineering',
-                      gpa: '3.87 / 4.00',
-                      date: 'June 2023 – June 2024',
-                      activities: ["Dean's List", 'NCAA Division I Ice Hockey'],
-                    },
-                  ].map((edu, i) => (
-                    <div key={i} className="p-6 rounded-xl border border-slate-800 bg-slate-900/50">
-                      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-2">
-                        <div>
-                          <h4 className="text-xl font-bold">{edu.school}</h4>
-                          <p className="text-slate-400 text-sm">{edu.location}</p>
+            {/* ── About Me ── */}
+            {activeTab === 'about' && (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '64px' }}>
+
+                {/* Bio + photos */}
+                <div style={{ display: 'flex', flexDirection: 'row', gap: '56px', alignItems: 'flex-start', flexWrap: 'wrap' }}>
+                  <div style={{ flexShrink: 0, width: '220px', display: 'flex', flexDirection: 'column', gap: '14px' }}>
+                    <img src="/headshot.jpg" alt="Eleanor Abel" style={{ width: '100%', aspectRatio: '1/1', objectFit: 'cover', objectPosition: 'top', borderRadius: '8px' }} />
+                    <Photo src="/IMG_1873.JPG" alt="Eleanor captaining the Ontario Hockey Academy" className="w-full h-40 object-cover object-top rounded" style={{ borderRadius: '8px' }} />
+                  </div>
+                  <div style={{ flex: 1, minWidth: '280px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                    {[
+                      "I'm a mechanical engineering student at Vanderbilt, focused on aerospace, with a minor in Education Studies. My grandfather worked in the wind tunnel at NASA Langley — that was my first signal that this could be a real direction for me.",
+                      "My path hasn't been a straight line. I started at Union College in Schenectady as a D1 hockey player, then transferred to Vanderbilt to go all-in on engineering. Carrying a full ME course load while competing at the D1 level taught me how to manage hard things at the same time — which turns out to be a useful skill.",
+                      "Coursework: thermodynamics, dynamics, linear algebra, instrumentation. Lab work: thermal protection for Mars rovers, a wind tunnel I built myself, automated manufacturing systems. I also speak French at a professional level — I used it daily during my year captaining a Tier I hockey program in Cornwall, Ontario.",
+                      "What drives all of it: I want to build things that matter. Thermal systems going to Mars, sensors that help people work better, teaching engineers to think clearly — same drive, different forms.",
+                    ].map((p, i) => (
+                      <p key={i} style={{ ...sans, fontSize: '16px', color: '#5A5A5E', lineHeight: 1.8, fontWeight: 300 }}>{p}</p>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Education */}
+                <div>
+                  <h3 style={{ ...serif, fontSize: '32px', fontWeight: 600, fontStyle: 'italic', color: '#EDEDEA', marginBottom: '24px' }}>Education</h3>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                    {[
+                      { school: 'Vanderbilt University', location: 'Nashville, TN', degree: 'B.E. Mechanical Engineering', gpa: '3.93 / 4.00', date: 'Aug 2025 – Present', activities: ['NROTC', 'Society of Women Engineers', 'Engineers Without Borders'] },
+                      { school: 'Union College', location: 'Schenectady, NY', degree: 'B.E. Mechanical Engineering', gpa: '3.87 / 4.00', date: 'June 2023 – June 2024', activities: ["Dean's List", 'NCAA Division I Ice Hockey'] },
+                    ].map((edu, i) => (
+                      <div key={i} style={{ padding: '24px 28px', border: '1px solid #1A1A1E', borderRadius: '8px', background: '#0D0D10' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '16px', marginBottom: '8px', flexWrap: 'wrap' }}>
+                          <div>
+                            <h4 style={{ ...serif, fontSize: '20px', fontWeight: 600, color: '#EDEDEA', marginBottom: '2px' }}>{edu.school}</h4>
+                            <p style={{ ...sans, fontSize: '12px', color: '#3A3A3E' }}>{edu.location}</p>
+                          </div>
+                          <span style={{ ...mono, fontSize: '11px', color: '#E85D26', flexShrink: 0 }}>{edu.date}</span>
                         </div>
-                        <span className="text-orange-400 text-sm font-mono mt-1 sm:mt-0 flex-shrink-0">{edu.date}</span>
+                        <p style={{ ...sans, fontSize: '14px', color: '#5A5A5E', marginBottom: '4px' }}>{edu.degree}</p>
+                        <p style={{ ...mono, fontSize: '11px', color: '#3A3A3E', marginBottom: '14px' }}>GPA {edu.gpa}</p>
+                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+                          {edu.activities.map((a, j) => (
+                            <span key={j} style={{ ...mono, fontSize: '10px', letterSpacing: '0.08em', textTransform: 'uppercase', padding: '4px 10px', border: '1px solid #222226', color: '#3A3A3E', borderRadius: '4px' }}>{a}</span>
+                          ))}
+                        </div>
                       </div>
-                      <p className="text-slate-300 mb-2">{edu.degree}</p>
-                      <p className="text-slate-400 text-sm mb-3">GPA: {edu.gpa}</p>
-                      <div className="flex flex-wrap gap-2">
-                        {edu.activities.map((a, j) => (
-                          <span key={j} className="px-3 py-1 rounded-full bg-slate-800 text-slate-300 text-xs font-mono">{a}</span>
-                        ))}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Skills */}
-              <div>
-                <h3 className="text-2xl font-bold mb-6 text-orange-400">Skills & Tools</h3>
-                <div className="grid md:grid-cols-2 gap-10">
-                  {[
-                    {
-                      category: 'Software & Programming',
-                      items: ['Python', 'Java', 'MATLAB / Simulink / Simscape', 'LabVIEW', 'Arduino', 'HTML / React'],
-                    },
-                    {
-                      category: 'Engineering & Design',
-                      items: ['SolidWorks (CSWA Certified)', 'AutoCAD', 'FEA & Thermal Analysis', 'Prototyping & Fabrication', 'NI DAQ & Instrumentation'],
-                    },
-                    {
-                      category: 'Aerospace Focus',
-                      items: ['Thermal Management Systems', 'MLI / PCM / Heat Pipes', 'Aerodynamics & CFD', 'Systems Integration', 'NASA Proposal Standards'],
-                    },
-                    {
-                      category: 'Certifications & Languages',
-                      items: ['Certified SolidWorks Associate (CSWA)', 'DFP Affaires B1', 'English (Native)', 'French (Professional Proficiency)'],
-                    },
-                  ].map(({ category, items }, i) => (
-                    <div key={i}>
-                      <h4 className="text-lg font-semibold mb-3 text-slate-200">{category}</h4>
-                      <ul className="space-y-2">
-                        {items.map((item, j) => (
-                          <li key={j} className="flex items-start gap-3 text-slate-300">
-                            <span className="text-orange-500 mt-1 flex-shrink-0">→</span>
-                            <span>{item}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Contact */}
-              <div className="pt-8 border-t border-slate-800">
-                <p className="text-slate-400 mb-6">Let's talk. Reach out if you're working on something interesting.</p>
-                <div className="flex flex-col sm:flex-row gap-4">
-                  <a
-                    href="mailto:eleanoroabel@gmail.com"
-                    className="px-6 py-3 rounded-lg border border-orange-500/30 text-orange-400 hover:bg-orange-500/10 hover:border-orange-500 transition-all font-semibold text-center"
-                  >
-                    Email
-                  </a>
-                  <a
-                    href="https://www.linkedin.com/in/eleanor-abel-a6134b338"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="px-6 py-3 rounded-lg border border-slate-700 text-slate-300 hover:border-orange-400 hover:text-orange-400 transition-all font-semibold text-center"
-                  >
-                    LinkedIn
-                  </a>
-                  <a
-                    href="https://github.com/abele28"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="px-6 py-3 rounded-lg border border-slate-700 text-slate-300 hover:border-orange-400 hover:text-orange-400 transition-all font-semibold flex items-center justify-center gap-2"
-                  >
-                    <Github size={18} /> GitHub
-                  </a>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* ── Fun Things ── */}
-          {activeTab === 'fun' && (
-            <div className="space-y-14">
-
-              {/* Hockey */}
-              <div>
-                <div className="flex flex-col md:flex-row gap-8 items-start mb-6">
-                  <div className="md:w-56 flex-shrink-0">
-                    <img
-                      src="/IMG_1873.JPG"
-                      alt="Eleanor captaining the Ontario Hockey Academy"
-                      className="w-full h-52 object-cover object-top rounded-xl"
-                    />
+                    ))}
                   </div>
-                  <div>
-                    <h3 className="text-2xl font-bold mb-1">Hockey</h3>
-                    <p className="text-orange-400 text-sm font-semibold mb-3">Player → Captain → Coach</p>
-                    <p className="text-slate-300 leading-relaxed mb-4">
-                      Hockey has been a constant since I was a kid. I played D1 at Union College, then
-                      spent a year as captain of the Ontario Hockey Academy's Tier I program in Cornwall,
-                      Ontario — running practices, managing game day, and being the bridge between athletes
-                      and staff. I still coach youth hockey. It's not something I plan to stop.
+                </div>
+
+                {/* Skills */}
+                <div>
+                  <h3 style={{ ...serif, fontSize: '32px', fontWeight: 600, fontStyle: 'italic', color: '#EDEDEA', marginBottom: '28px' }}>Skills & Tools</h3>
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '40px' }}>
+                    {[
+                      { category: 'Software & Programming', items: ['Python', 'Java', 'MATLAB / Simulink / Simscape', 'LabVIEW', 'Arduino', 'HTML / React'] },
+                      { category: 'Engineering & Design', items: ['SolidWorks (CSWA Certified)', 'AutoCAD', 'FEA & Thermal Analysis', 'Prototyping & Fabrication', 'NI DAQ & Instrumentation'] },
+                      { category: 'Aerospace Focus', items: ['Thermal Management Systems', 'MLI / PCM / Heat Pipes', 'Aerodynamics & CFD', 'Systems Integration', 'NASA Proposal Standards'] },
+                      { category: 'Certifications & Languages', items: ['CSWA — SolidWorks', 'DFP Affaires B1', 'English (Native)', 'French (Professional)'] },
+                    ].map(({ category, items }, i) => (
+                      <div key={i}>
+                        <p style={{ ...mono, fontSize: '10px', letterSpacing: '0.18em', textTransform: 'uppercase', color: '#E85D26', marginBottom: '16px' }}>{category}</p>
+                        <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                          {items.map((item, j) => (
+                            <li key={j} style={{ display: 'flex', alignItems: 'flex-start', gap: '10px' }}>
+                              <span style={{ color: '#E85D26', marginTop: '1px', flexShrink: 0, fontSize: '12px' }}>—</span>
+                              <span style={{ ...sans, fontSize: '14px', color: '#5A5A5E', fontWeight: 300 }}>{item}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Contact */}
+                <div style={{ paddingTop: '32px', borderTop: '1px solid #1A1A1E' }}>
+                  <p style={{ ...sans, fontSize: '14px', color: '#3A3A3E', marginBottom: '20px', fontWeight: 300 }}>Let's talk. Reach out if you're working on something interesting.</p>
+                  <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+                    <a href="mailto:eleanoroabel@gmail.com" style={{ ...sans, fontSize: '13px', padding: '10px 24px', border: '1px solid rgba(232,93,38,0.3)', color: '#E85D26', borderRadius: '6px', textDecoration: 'none', transition: 'background 0.2s' }}>
+                      Email
+                    </a>
+                    <a href="https://www.linkedin.com/in/eleanor-abel-a6134b338" target="_blank" rel="noopener noreferrer" style={{ ...sans, fontSize: '13px', padding: '10px 24px', border: '1px solid #2A2A2E', color: '#5A5A5E', borderRadius: '6px', textDecoration: 'none', transition: 'border-color 0.2s, color 0.2s' }}>
+                      LinkedIn
+                    </a>
+                    <a href="https://github.com/abele28" target="_blank" rel="noopener noreferrer" style={{ ...sans, fontSize: '13px', padding: '10px 24px', border: '1px solid #2A2A2E', color: '#5A5A5E', borderRadius: '6px', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <Github size={14} /> GitHub
+                    </a>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* ── Fun Things ── */}
+            {activeTab === 'fun' && (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '56px' }}>
+
+                {/* Hockey */}
+                <div>
+                  <span className="fun-rule" />
+                  <div style={{ display: 'flex', flexDirection: 'row', gap: '40px', alignItems: 'flex-start', flexWrap: 'wrap', marginBottom: '24px' }}>
+                    <div style={{ flexShrink: 0, width: '200px' }}>
+                      <img src="/IMG_1873.JPG" alt="Eleanor captaining the Ontario Hockey Academy" style={{ width: '100%', height: '200px', objectFit: 'cover', objectPosition: 'top', borderRadius: '8px' }} />
+                    </div>
+                    <div style={{ flex: 1, minWidth: '240px' }}>
+                      <h3 style={{ ...serif, fontSize: '30px', fontWeight: 600, fontStyle: 'italic', color: '#EDEDEA', marginBottom: '4px' }}>Hockey</h3>
+                      <p style={{ ...mono, fontSize: '10px', letterSpacing: '0.15em', textTransform: 'uppercase', color: '#E85D26', marginBottom: '16px' }}>Player → Captain → Coach</p>
+                      <p style={{ ...sans, fontSize: '15px', color: '#5A5A5E', lineHeight: 1.75, fontWeight: 300, marginBottom: '16px' }}>
+                        Hockey has been a constant since I was a kid. I played D1 at Union College, then spent a year as captain of the Ontario Hockey Academy's Tier I program in Cornwall, Ontario — running practices, managing game day, and being the bridge between athletes and staff. I still coach youth hockey. It's not something I plan to stop.
+                      </p>
+                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+                        {['Union College NCAA DI', 'Ontario Hockey Academy — Captain', 'Youth Coaching'].map((t, i) => (
+                          <span key={i} style={{ ...mono, fontSize: '10px', letterSpacing: '0.08em', textTransform: 'uppercase', padding: '4px 10px', border: '1px solid #222226', color: '#3A3A3E', borderRadius: '4px' }}>{t}</span>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                  <div style={{ marginLeft: '0' }}>
+                    <img src="/DSC_6512.jpeg" alt="#28 — Union College Women's Hockey" style={{ width: '100%', maxWidth: '340px', height: '180px', objectFit: 'cover', objectPosition: 'top', borderRadius: '6px', border: '1px solid #1A1A1E' }} />
+                    <p style={{ ...mono, fontSize: '10px', color: '#3A3A3E', marginTop: '8px', letterSpacing: '0.05em' }}>#28 — Union College Women's Hockey</p>
+                  </div>
+                </div>
+
+                {/* Running */}
+                <div style={{ display: 'flex', flexDirection: 'row', gap: '40px', alignItems: 'flex-start', flexWrap: 'wrap' }}>
+                  <div style={{ flexShrink: 0, width: '200px' }}>
+                    <img src="/IMG_2866.JPG" alt="Eleanor racing in a triathlon" style={{ width: '100%', height: '200px', objectFit: 'cover', objectPosition: 'top', borderRadius: '8px' }} />
+                  </div>
+                  <div style={{ flex: 1, minWidth: '240px' }}>
+                    <span className="fun-rule" />
+                    <h3 style={{ ...serif, fontSize: '30px', fontWeight: 600, fontStyle: 'italic', color: '#EDEDEA', marginBottom: '4px' }}>Running & Triathlon</h3>
+                    <p style={{ ...mono, fontSize: '10px', letterSpacing: '0.15em', textTransform: 'uppercase', color: '#E85D26', marginBottom: '16px' }}>The off-season doesn't really exist</p>
+                    <p style={{ ...sans, fontSize: '15px', color: '#5A5A5E', lineHeight: 1.75, fontWeight: 300 }}>
+                      The athlete mindset doesn't switch off when the season ends. Running, cycling, and triathlon are how I reset between everything else — and honestly, it's where a lot of my best thinking happens.
                     </p>
-                    <div className="flex flex-wrap gap-2">
-                      {['Union College NCAA DI', 'Ontario Hockey Academy — Captain', 'Youth Coaching'].map((t, i) => (
-                        <span key={i} className="px-3 py-1 rounded-full bg-slate-800 text-slate-300 text-xs font-mono">{t}</span>
-                      ))}
-                    </div>
                   </div>
                 </div>
-                <div className="ml-0 md:ml-64 md:pl-8">
-                  <img
-                    src="/DSC_6512.jpeg"
-                    alt="Eleanor (#28) playing for Union College"
-                    className="w-full max-w-sm h-48 object-cover object-top rounded-lg border border-slate-800"
-                  />
-                  <p className="text-slate-500 text-xs mt-2 font-mono">#28 — Union College Women's Hockey</p>
-                </div>
-              </div>
 
-              {/* Running & Triathlon */}
-              <div className="flex flex-col md:flex-row gap-8 items-start">
-                <div className="md:w-56 flex-shrink-0">
-                  <img
-                    src="/IMG_2866.JPG"
-                    alt="Eleanor racing in a triathlon"
-                    className="w-full h-52 object-cover object-top rounded-xl"
-                  />
-                </div>
+                {/* Rubik's Cubes */}
                 <div>
-                  <h3 className="text-2xl font-bold mb-1">Running & Triathlon</h3>
-                  <p className="text-orange-400 text-sm font-semibold mb-3">The off-season doesn't really exist</p>
-                  <p className="text-slate-300 leading-relaxed">
-                    The athlete mindset doesn't switch off when the season ends. Running, cycling, and
-                    triathlon are how I reset between everything else — and honestly, it's where a lot
-                    of my best thinking happens.
+                  <span className="fun-rule" />
+                  <h3 style={{ ...serif, fontSize: '30px', fontWeight: 600, fontStyle: 'italic', color: '#EDEDEA', marginBottom: '4px' }}>Rubik's Cubes</h3>
+                  <p style={{ ...mono, fontSize: '10px', letterSpacing: '0.15em', textTransform: 'uppercase', color: '#E85D26', marginBottom: '16px' }}>Since age 9</p>
+                  <p style={{ ...sans, fontSize: '15px', color: '#5A5A5E', lineHeight: 1.75, fontWeight: 300, maxWidth: '560px' }}>
+                    I've been solving Rubik's cubes since I was 9. Started with the 3x3 and went from there. Something about it stuck — probably the same thing that makes me want to understand how systems work.
                   </p>
                 </div>
-              </div>
 
-              {/* Rubik's Cube */}
-              <div>
-                <h3 className="text-2xl font-bold mb-1">Rubik's Cubes</h3>
-                <p className="text-orange-400 text-sm font-semibold mb-3">Since age 9</p>
-                <p className="text-slate-300 leading-relaxed">
-                  I've been solving Rubik's cubes since I was 9. Started with the 3x3 and went from
-                  there. Something about it stuck — probably the same thing that makes me want to
-                  understand how systems work.
-                </p>
-              </div>
-
-              {/* Lego */}
-              <div>
-                <h3 className="text-2xl font-bold mb-1">Lego</h3>
-                <p className="text-orange-400 text-sm font-semibold mb-3">A lifelong thing</p>
-                <p className="text-slate-300 leading-relaxed">
-                  Lego has been a thing my whole life and I still build. It never really gets old —
-                  there's something satisfying about it that I don't think goes away.
-                </p>
-              </div>
-
-              {/* Always Building Something */}
-              <div className="flex flex-col md:flex-row gap-8 items-start">
-                <div className="md:w-56 flex-shrink-0">
-                  <img
-                    src="/IMG_4073.jpeg"
-                    alt="In the shop"
-                    className="w-full h-52 object-cover object-top rounded-xl"
-                  />
-                </div>
+                {/* Lego */}
                 <div>
-                  <h3 className="text-2xl font-bold mb-1">Always Building Something</h3>
-                  <p className="text-orange-400 text-sm font-semibold mb-3">Wind tunnels, apps, whatever's next</p>
-                  <p className="text-slate-300 leading-relaxed">
-                    The wind tunnel wasn't assigned. The workout tracker wasn't either. There's something
-                    specific about making a thing that didn't exist before — I chase that feeling in
-                    whatever form it shows up.
+                  <span className="fun-rule" />
+                  <h3 style={{ ...serif, fontSize: '30px', fontWeight: 600, fontStyle: 'italic', color: '#EDEDEA', marginBottom: '4px' }}>Lego</h3>
+                  <p style={{ ...mono, fontSize: '10px', letterSpacing: '0.15em', textTransform: 'uppercase', color: '#E85D26', marginBottom: '16px' }}>A lifelong thing</p>
+                  <p style={{ ...sans, fontSize: '15px', color: '#5A5A5E', lineHeight: 1.75, fontWeight: 300, maxWidth: '560px' }}>
+                    Lego has been a thing my whole life and I still build. It never really gets old — there's something satisfying about it that I don't think goes away.
                   </p>
                 </div>
+
+                {/* Building */}
+                <div style={{ display: 'flex', flexDirection: 'row', gap: '40px', alignItems: 'flex-start', flexWrap: 'wrap' }}>
+                  <div style={{ flexShrink: 0, width: '200px' }}>
+                    <img src="/IMG_4073.jpeg" alt="In the shop" style={{ width: '100%', height: '200px', objectFit: 'cover', objectPosition: 'top', borderRadius: '8px' }} />
+                  </div>
+                  <div style={{ flex: 1, minWidth: '240px' }}>
+                    <span className="fun-rule" />
+                    <h3 style={{ ...serif, fontSize: '30px', fontWeight: 600, fontStyle: 'italic', color: '#EDEDEA', marginBottom: '4px' }}>Always Building Something</h3>
+                    <p style={{ ...mono, fontSize: '10px', letterSpacing: '0.15em', textTransform: 'uppercase', color: '#E85D26', marginBottom: '16px' }}>Wind tunnels, apps, whatever's next</p>
+                    <p style={{ ...sans, fontSize: '15px', color: '#5A5A5E', lineHeight: 1.75, fontWeight: 300 }}>
+                      The wind tunnel wasn't assigned. The workout tracker wasn't either. There's something specific about making a thing that didn't exist before — I chase that feeling in whatever form it shows up.
+                    </p>
+                  </div>
+                </div>
+
+                {/* French */}
+                <div>
+                  <span className="fun-rule" />
+                  <h3 style={{ ...serif, fontSize: '30px', fontWeight: 600, fontStyle: 'italic', color: '#EDEDEA', marginBottom: '4px' }}>French</h3>
+                  <p style={{ ...mono, fontSize: '10px', letterSpacing: '0.15em', textTransform: 'uppercase', color: '#E85D26', marginBottom: '16px' }}>Professional Proficiency — DFP Affaires B1</p>
+                  <p style={{ ...sans, fontSize: '15px', color: '#5A5A5E', lineHeight: 1.75, fontWeight: 300, maxWidth: '560px' }}>
+                    I speak French at a professional level — I used it daily during my year in Cornwall, Ontario. It's not a resume line for me; it's something I actively maintain and keep working on.
+                  </p>
+                </div>
+
               </div>
+            )}
 
-              {/* French */}
-              <div>
-                <h3 className="text-2xl font-bold mb-1">French</h3>
-                <p className="text-orange-400 text-sm font-semibold mb-3">Professional Proficiency — DFP Affaires B1</p>
-                <p className="text-slate-300 leading-relaxed">
-                  I speak French at a professional level — I used it daily during my year in Cornwall,
-                  Ontario. It's not a resume line for me; it's something I actively maintain and
-                  keep working on.
-                </p>
-              </div>
+          </div>
+        </section>
 
-            </div>
-          )}
-        </div>
-      </section>
+        {/* ── Footer ── */}
+        <footer style={{ borderTop: '1px solid #1A1A1E', padding: '28px 24px', textAlign: 'center' }}>
+          <p style={{ ...mono, fontSize: '11px', color: '#2A2A2E', letterSpacing: '0.08em' }}>Designed & built by Eleanor Abel · Deployed on Vercel</p>
+        </footer>
 
-      {/* Footer */}
-      <footer className="border-t border-slate-800 py-8 px-6 text-center text-slate-500 text-sm">
-        <p>Designed & built by Eleanor Abel. Deployed on Vercel.</p>
-      </footer>
-    </div>
+      </div>
+    </>
   );
 }

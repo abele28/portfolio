@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-* {
+*, *::before, *::after {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
@@ -13,36 +13,16 @@ html {
 }
 
 body {
-  font-family: system-ui, -apple-system, sans-serif;
-  background: #03071e;
-  color: #e2e8f0;
+  font-family: var(--font-dm-sans), system-ui, sans-serif;
+  background: #09090B;
+  color: #EDEDEA;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* Smooth scrollbar */
-::-webkit-scrollbar {
-  width: 8px;
-}
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: #09090B; }
+::-webkit-scrollbar-thumb { background: #2A2A2E; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #E85D26; }
 
-::-webkit-scrollbar-track {
-  background: #0f172a;
-}
-
-::-webkit-scrollbar-thumb {
-  background: #ea580c;
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: #f97316;
-}
-
-/* Selection color */
-::selection {
-  background: #ea580c;
-  color: #fff;
-}
-
-/* Smooth transitions */
-a, button {
-  transition: all 0.3s ease;
-}
+::selection { background: #E85D26; color: #fff; }
