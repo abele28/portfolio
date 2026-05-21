@@ -7,9 +7,9 @@ const serif = { fontFamily: 'var(--font-cormorant)' };
 const sans  = { fontFamily: 'var(--font-dm-sans)' };
 const mono  = { fontFamily: 'var(--font-dm-mono)' };
 
-// ── Wind tunnel flow visualization ────────────────────────────────────────────
-// Potential flow around an elliptical body — directly references her wind tunnel
-// project and CFD work. Particles flow left→right, curving around the airfoil.
+// ── Animated streamline visualization ────────────────────────────────────────
+// Flowing particles with time-varying sinusoidal wave field.
+// No obstacle — pure animated streamlines that undulate across the full hero.
 function WindTunnelCanvas() {
   const canvasRef = useRef(null);
 
@@ -26,133 +26,72 @@ function WindTunnelCanvas() {
 
     const W = () => canvas.width;
     const H = () => canvas.height;
+    const U = 1.5; // horizontal speed
 
-    // Airfoil body parameters (right-center area of hero)
-    const getBody = () => ({
-      cx: W() * 0.71,
-      cy: H() * 0.46,
-      a:  W() * 0.115,   // semi-major (horizontal)
-      b:  H() * 0.075,   // semi-minor (vertical)
-    });
-
-    const U = 1.4; // freestream speed
-
-    function vel(x, y, body) {
-      const { cx, cy, a, b } = body;
-      const dx = x - cx;
-      const dy = y - cy;
-      const en = (dx / a) * (dx / a) + (dy / b) * (dy / b);
-
-      if (en <= 1.02) return { vx: 0, vy: 0 }; // inside body
-
-      // Potential flow around equivalent circle (R² = a·b)
-      const R2 = a * b;
-      const r2 = dx * dx + dy * dy;
-      const r4 = r2 * r2;
-      const vx = U * (1 - R2 * (dx * dx - dy * dy) / r4);
-      const vy = -U * R2 * 2 * dx * dy / r4;
-      return { vx, vy };
-    }
-
-    // Seed particles across full height in rows
-    const N = 220;
+    // Each particle gets a unique wave signature
+    const N = 210;
     const particles = Array.from({ length: N }, (_, i) => {
       const frac = i / N;
-      const baseY = frac * (H() + 40) - 20 + (Math.random() - 0.5) * 4;
+      const baseY = frac * (H() + 40) - 20 + (Math.random() - 0.5) * 3;
       return {
         x: Math.random() * W(),
         y: baseY,
         baseY,
         history: [],
-        // Brightest near the vertical center
-        alpha: 0.22 + 0.30 * Math.sin(frac * Math.PI),
+        alpha: 0.55 + 0.30 * Math.sin(frac * Math.PI), // pale orange — clearly visible
+        phase: Math.random() * Math.PI * 2,             // unique wave offset
+        freq:  0.55 + Math.random() * 0.5,              // slightly varied frequency
+        amp:   0.25 + Math.random() * 0.45,             // varied amplitude
       };
     });
 
     let animId;
+    let t = 0;
 
     const frame = () => {
-      const body = getBody();
-      // Clear canvas each frame — trails drawn explicitly as gradient lines
+      t++;
       ctx.clearRect(0, 0, W(), H());
 
       particles.forEach(p => {
-        const { vx, vy } = vel(p.x, p.y, body);
+        // Horizontal flow + time-varying sinusoidal vertical component
+        // Two harmonics for more organic, complex wave shapes
+        const hf = Math.sin(Math.PI * (p.y / H())); // edge-to-center envelope
+        const vy = p.amp * hf * (
+          Math.sin(p.x / 115 * p.freq + t * 0.011 + p.phase) * 0.72 +
+          Math.sin(p.x / 52  * p.freq + t * 0.019 + p.phase * 1.6) * 0.28
+        );
 
-        // Draw full trail as a gradient polyline: transparent at tail, bright at head
+        // Gradient trail: transparent tail → bright orange head
         if (p.history.length > 2) {
           const tail = p.history[0];
           const head = p.history[p.history.length - 1];
           const grad = ctx.createLinearGradient(tail.x, tail.y, head.x, head.y);
-          grad.addColorStop(0, 'rgba(232,93,38,0)');
-          grad.addColorStop(0.6, `rgba(232,93,38,${p.alpha * 0.4})`);
-          grad.addColorStop(1, `rgba(232,93,38,${p.alpha})`);
+          grad.addColorStop(0,   'rgba(240,160,100,0)');
+          grad.addColorStop(0.4,  `rgba(240,160,100,${p.alpha * 0.5})`);
+          grad.addColorStop(1,   `rgba(240,160,100,${p.alpha})`);
           ctx.beginPath();
           ctx.moveTo(tail.x, tail.y);
           for (let i = 1; i < p.history.length; i++) ctx.lineTo(p.history[i].x, p.history[i].y);
           ctx.lineTo(p.x, p.y);
           ctx.strokeStyle = grad;
-          ctx.lineWidth = 1.4;
+          ctx.lineWidth = 1.3;
           ctx.lineCap = 'round';
           ctx.stroke();
         }
 
         p.history.push({ x: p.x, y: p.y });
-        if (p.history.length > 40) p.history.shift();
+        if (p.history.length > 48) p.history.shift();
 
-        p.x += vx;
+        p.x += U;
         p.y += vy;
 
-        const en = ((p.x - body.cx) / body.a) ** 2 + ((p.y - body.cy) / body.b) ** 2;
-        if (p.x > W() + 12 || p.x < -60 || p.y < -30 || p.y > H() + 30 || en < 0.88) {
-          p.x = -8;
-          p.y = p.baseY + (Math.random() - 0.5) * 5;
+        // Reset off right edge or drifted too far vertically
+        if (p.x > W() + 15 || p.y < -30 || p.y > H() + 30) {
+          p.x = -10;
+          p.y = p.baseY + (Math.random() - 0.5) * 4;
           p.history = [];
         }
       });
-
-      // Airfoil — outer glow, body fill, stroke
-      const { cx, cy, a, b } = body;
-      ctx.beginPath();
-      ctx.ellipse(cx, cy, a + 8, b + 8, 0, 0, Math.PI * 2);
-      ctx.strokeStyle = 'rgba(232,93,38,0.07)';
-      ctx.lineWidth = 14;
-      ctx.stroke();
-
-      ctx.beginPath();
-      ctx.ellipse(cx, cy, a, b, 0, 0, Math.PI * 2);
-      ctx.fillStyle = '#09090B';
-      ctx.fill();
-      ctx.strokeStyle = 'rgba(232,93,38,0.55)';
-      ctx.lineWidth = 1.5;
-      ctx.stroke();
-
-      // Stagnation point at leading edge
-      ctx.beginPath();
-      ctx.arc(cx - a, cy, 3.5, 0, Math.PI * 2);
-      ctx.fillStyle = '#E85D26';
-      ctx.fill();
-
-      // Freestream arrow (more visible)
-      ctx.strokeStyle = 'rgba(232,93,38,0.45)';
-      ctx.lineWidth = 1.2;
-      ctx.beginPath();
-      ctx.moveTo(cx - a - 48, cy);
-      ctx.lineTo(cx - a - 13, cy);
-      ctx.stroke();
-      ctx.beginPath();
-      ctx.moveTo(cx - a - 21, cy - 7);
-      ctx.lineTo(cx - a - 13, cy);
-      ctx.lineTo(cx - a - 21, cy + 7);
-      ctx.stroke();
-
-      // Annotations
-      ctx.font = 'bold 10px "DM Mono", monospace';
-      ctx.fillStyle = 'rgba(232,93,38,0.55)';
-      ctx.fillText('V∞', cx - a - 65, cy - 8);
-      ctx.font = '9px "DM Mono", monospace';
-      ctx.fillStyle = 'rgba(232,93,38,0.4)';
-      ctx.fillText(`Re = 2.4 × 10⁵`, cx - a * 0.7, cy + b + 20);
 
       animId = requestAnimationFrame(frame);
     };
