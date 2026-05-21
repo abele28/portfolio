@@ -48,7 +48,7 @@ export default function Portfolio() {
     {
       title: 'Aerospace Supply Chain Engineering',
       subtitle: 'Incora — Global Aerospace Hardware Distributor',
-      date: '',
+      date: 'May – June 2026',
       description:
         'Interpreted engineering drawings for aerospace fasteners, clamps, and bearings to extract material specs, tolerances, and compliance requirements for supplier qualification. Analyzed O-ring specifications and compound data to identify compliant substitutes, achieving an estimated ~77% unit cost reduction. Screened 80+ South American vendors against AS9100 certification standards to support procurement decisions.',
       tags: ['AS9100', 'Engineering Drawings', 'Supplier Qualification', 'O-Ring Analysis', 'Procurement', 'Aerospace Hardware'],
@@ -153,6 +153,14 @@ export default function Portfolio() {
               ATHLETE · ENGINEER · INNOVATOR
             </span>
           </div>
+
+          <h1 className="text-5xl md:text-6xl font-bold mb-6 leading-tight tracking-tight">
+            Aerospace-focused
+            <br />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-orange-500 to-red-500">
+              Mechanical Engineer.
+            </span>
+          </h1>
 
           <p className="text-lg text-slate-400 mb-6 max-w-2xl leading-relaxed">
             Vanderbilt ME sophomore. Designed thermal systems for a Mars cave rover through NASA L'SPACE.
