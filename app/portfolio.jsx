@@ -216,91 +216,6 @@ function ProjectRow({ project, index, isOpen, onToggle }) {
 }
 
 // ── World map (equirectangular projection, simplified continent polygons) ─────
-function WorldMap() {
-  // Equirectangular mapping calibrated to image padding
-  const toP = (lng, lat) => ({
-    left: `${3.5 + (lng + 180) / 360 * 93}%`,
-    top:  `${9   + (90 - lat) / 180 * 80}%`,
-  });
-
-  // lx/ly: pixel offset for the label text from the dot center
-  const locations = [
-    { name: 'Canada',       sub: 'Lived · Cornwall, ON', lat: 45.02, lng: -74.73, lived: true,  lx: -62, ly: -15 },
-    { name: 'South Africa', sub: 'Lived',                lat: -30.0, lng: 25.0,   lived: true,  lx: 9,   ly: -15 },
-    { name: 'Czech Rep.',   sub: 'Prague',               lat: 50.08, lng: 14.43,  lived: false, lx: -58, ly: -15 },
-    { name: 'Austria',      sub: 'Vienna',               lat: 48.21, lng: 16.37,  lived: false, lx: 9,   ly: -5  },
-    { name: 'France',       sub: null,                   lat: 48.85, lng: 2.35,   lived: false, lx: -46, ly: -15 },
-    { name: 'Switzerland',  sub: null,                   lat: 46.8,  lng: 8.2,    lived: false, lx: -64, ly: 8   },
-    { name: 'Italy',        sub: 'Rome',                 lat: 41.9,  lng: 12.5,   lived: false, lx: 9,   ly: 8   },
-    { name: 'Mexico',       sub: null,                   lat: 19.4,  lng: -99.1,  lived: false, lx: -48, ly: -15 },
-    { name: 'Argentina',    sub: 'Buenos Aires',         lat: -34.6, lng: -58.4,  lived: false, lx: 9,   ly: -13 },
-    { name: 'Brazil',       sub: null,                   lat: -15.8, lng: -47.9,  lived: false, lx: 9,   ly: -13 },
-  ];
-
-  return (
-    <div style={{ position: 'relative', borderRadius: '8px', overflow: 'hidden', border: '1px solid #1A1A1E' }}>
-      {/* Map image — darkened so orange labels pop */}
-      <img src="/world-map.jpg" alt="World map showing visited countries"
-        style={{ display: 'block', width: '100%', height: 'auto', filter: 'brightness(0.32)' }} />
-
-      {/* Location pins + labels */}
-      {locations.map(({ name, sub, lat, lng, lived, lx, ly }) => {
-        const pos = toP(lng, lat);
-        return (
-          <div key={name} style={{ position: 'absolute', ...pos, transform: 'translate(-50%, -50%)', zIndex: 2 }}>
-            {/* Dot */}
-            <div style={{
-              width: lived ? 7 : 5,
-              height: lived ? 7 : 5,
-              borderRadius: '50%',
-              background: '#E85D26',
-              position: 'absolute',
-              top: '50%', left: '50%',
-              transform: 'translate(-50%,-50%)',
-              boxShadow: `0 0 ${lived ? 9 : 5}px rgba(232,93,38,${lived ? 0.85 : 0.55})`,
-            }} />
-            {/* Label */}
-            <div style={{ position: 'absolute', left: lx, top: ly, whiteSpace: 'nowrap' }}>
-              <span style={{
-                ...mono, fontSize: '8px', letterSpacing: '0.1em', textTransform: 'uppercase',
-                color: '#E85D26', display: 'block', lineHeight: 1.3,
-                fontWeight: lived ? 600 : 400,
-                textShadow: '0 1px 6px #09090B, 0 0 12px #09090B',
-              }}>
-                {name}
-              </span>
-              {sub && (
-                <span style={{
-                  ...mono, fontSize: '7px', color: 'rgba(232,93,38,0.55)',
-                  letterSpacing: '0.06em', display: 'block', lineHeight: 1.3,
-                  textShadow: '0 1px 6px #09090B',
-                }}>
-                  {sub}
-                </span>
-              )}
-            </div>
-          </div>
-        );
-      })}
-
-      {/* Stats bar */}
-      <div style={{
-        position: 'absolute', bottom: 0, left: 0, right: 0,
-        padding: '8px 14px',
-        background: 'linear-gradient(to top, rgba(9,9,11,0.88), transparent)',
-        display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-      }}>
-        <span style={{ ...mono, fontSize: '9px', color: 'rgba(232,93,38,0.65)', letterSpacing: '0.1em', textTransform: 'uppercase' }}>
-          Prague → Vienna · ~330 km by bike
-        </span>
-        <span style={{ ...mono, fontSize: '9px', color: '#646466', letterSpacing: '0.08em' }}>
-          10 countries · 4 continents
-        </span>
-      </div>
-    </div>
-  );
-}
-
 // ── Main component ────────────────────────────────────────────────────────────
 export default function Portfolio() {
   const [scrolled, setScrolled]     = useState(false);
@@ -679,7 +594,6 @@ export default function Portfolio() {
                     title: 'Travel',
                     subtitle: '10 countries · 4 continents',
                     body: 'Lived in South Africa and spent six months in Cornwall, Ontario playing hockey. Biked from Prague to Vienna the summer of 2024. France, Switzerland, Italy, Mexico, Argentina, Brazil — every trip has been different. Some for sport, some for adventure, usually both.',
-                    showMap: true,
                   },
                   {
                     title: 'Always Building Something',
@@ -719,11 +633,6 @@ export default function Portfolio() {
                             {item.tags.map((t, j) => (
                               <span key={j} style={{ ...mono, fontSize: '10px', letterSpacing: '0.07em', textTransform: 'uppercase', padding: '3px 9px', border: '1px solid #222226', color: '#646462', borderRadius: '4px' }}>{t}</span>
                             ))}
-                          </div>
-                        )}
-                        {item.showMap && (
-                          <div style={{ marginTop: '20px' }}>
-                            <WorldMap />
                           </div>
                         )}
                       </div>
