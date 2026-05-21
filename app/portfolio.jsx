@@ -35,6 +35,28 @@ export default function Portfolio() {
 
   const projects = [
     {
+      title: 'NASA Academy Internship',
+      subtitle: 'NASA Langley Research Center — Hampton, VA',
+      date: 'Summer 2026',
+      description:
+        'Incoming intern at NASA Academy hosted at NASA Langley Research Center — the same facility where my grandfather worked in the wind tunnel. Looking forward to contributing to aerospace research at one of NASA\'s premier centers.',
+      tags: ['NASA', 'Aerospace Research', 'NASA Langley'],
+      color: 'from-blue-500 to-indigo-600',
+      icon: '🛸',
+      photo: null,
+    },
+    {
+      title: 'Aerospace Supply Chain Engineering',
+      subtitle: 'Incora — Global Aerospace Hardware Distributor',
+      date: '',
+      description:
+        'Interpreted engineering drawings for aerospace fasteners, clamps, and bearings to extract material specs, tolerances, and compliance requirements for supplier qualification. Analyzed O-ring specifications and compound data to identify compliant substitutes, achieving an estimated ~77% unit cost reduction. Screened 80+ South American vendors against AS9100 certification standards to support procurement decisions.',
+      tags: ['AS9100', 'Engineering Drawings', 'Supplier Qualification', 'O-Ring Analysis', 'Procurement', 'Aerospace Hardware'],
+      color: 'from-yellow-500 to-amber-500',
+      icon: '⚙️',
+      photo: null,
+    },
+    {
       title: 'Mars Rover Thermal Engineering',
       subtitle: "NASA L'SPACE Mission Concept Academy",
       date: 'Sept – Dec 2025',
@@ -132,14 +154,6 @@ export default function Portfolio() {
             </span>
           </div>
 
-          <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight tracking-tight">
-            Mechanical engineering student.
-            <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-orange-500 to-red-500">
-              Aerospace is the plan.
-            </span>
-          </h1>
-
           <p className="text-lg text-slate-400 mb-6 max-w-2xl leading-relaxed">
             Vanderbilt ME sophomore. Designed thermal systems for a Mars cave rover through NASA L'SPACE.
             Former Division I athlete. Aerospace is where I'm headed.
@@ -174,11 +188,12 @@ export default function Portfolio() {
             </button>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-8 border-t border-slate-800">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-8 border-t border-slate-800">
             {[
               { label: 'Vanderbilt ME', value: 'Sophomore' },
               { label: 'DI Athlete', value: 'Union College Hockey' },
               { label: "NASA L'SPACE", value: 'Student Thermal Engineer' },
+              { label: 'NASA Langley', value: 'Incoming Intern' },
             ].map((cred, i) => (
               <div key={i} className="pt-4">
                 <p className="text-xs text-orange-400 font-mono tracking-wider mb-1">{cred.label}</p>
@@ -236,7 +251,7 @@ export default function Portfolio() {
                           <div>
                             <h3 className="text-2xl font-bold mb-1">{project.title}</h3>
                             <p className="text-orange-400 text-sm font-semibold">{project.subtitle}</p>
-                            <p className="text-slate-500 text-xs mt-1 font-mono">{project.date}</p>
+                            {project.date && <p className="text-slate-500 text-xs mt-1 font-mono">{project.date}</p>}
                           </div>
                         </div>
                         <p className="text-slate-300 mb-4 leading-relaxed">{project.description}</p>
