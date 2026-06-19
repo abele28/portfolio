@@ -244,19 +244,19 @@ export default function Portfolio() {
 
   const projects = [
     {
-      title: 'NASA Academy Internship',
-      subtitle: 'NASA Langley Research Center — Hampton, VA',
-      date: 'Summer 2026',
-      description: 'Incoming intern at NASA Academy at NASA Langley Research Center, starting summer 2026. Looking forward to contributing to aerospace research at one of NASA\'s flagship facilities.',
-      tags: ['NASA', 'Aerospace Research', 'NASA Langley'],
+      title: '3D-Printed UAS for Airworthiness Certification',
+      subtitle: 'NASA Aeronautical Academy — Hampton, VA',
+      date: 'June 2026 – Present',
+      description: 'Structures lead on a 10-week NASA program in charge of a four-person team, designing, building, and flying a 3D-printed UAS to generate airworthiness certification data for additively manufactured aircraft structures. Reverse-engineering a DJI UAS airframe from Keyence V-800 laser scan data in PTC Creo, validating structural design values via FEA, and developing a generative design study to optimize AM production geometry. Collaborated with the electrical team to integrate electronics into the airframe from the design stage, writing Python programs to calculate stress distributions across AM materials at load points. Leading NASA SRR and CDR milestone reviews, authoring technical review packages, and drafting a technical memo for program publication. Establishing Langley\'s first formal framework for additively manufactured airframes, conducting lab-to-lab consultations with NASA researchers across divisions to synthesize expertise where no prior process or documentation existed.',
+      tags: ['PTC Creo', 'FEA', 'Generative Design', 'Python', 'Additive Manufacturing', 'Structural Analysis'],
       photo: null,
     },
     {
       title: 'Aerospace Supply Chain Engineering',
       subtitle: 'Incora — Global Aerospace Hardware Distributor',
       date: 'May – June 2026',
-      description: 'Read engineering drawings for aerospace fasteners, clamps, and bearings to pull material specs, tolerances, and compliance data for supplier qualification. Analyzed O-ring specifications to identify compliant substitutes — estimated ~77% unit cost reduction. Screened 80+ South American vendors against AS9100 certification standards.',
-      tags: ['AS9100', 'Engineering Drawings', 'Supplier Qualification', 'O-Ring Analysis', 'Procurement'],
+      description: 'Reviewed 20+ aerospace engineering drawings for fasteners, clamps, and bearings, extracting GD&T tolerances, material specs, and compliance requirements to support supplier qualification decisions. Analyzed O-ring specifications and compound compatibility data, identifying AS9100-compliant substitutes and achieving an estimated 77% reduction in unit cost.',
+      tags: ['GD&T', 'AS9100', 'Engineering Drawings', 'O-Ring Analysis', 'Supplier Qualification'],
       photo: null,
     },
     {
@@ -379,7 +379,7 @@ export default function Portfolio() {
 
             <div className="a1" style={{ marginBottom: '28px' }}>
               <span style={{ ...mono, fontSize: '10px', letterSpacing: '0.24em', textTransform: 'uppercase', color: '#E85D26' }}>
-                Vanderbilt University · NASA Langley · 2026
+                Vanderbilt University · NASA Aeronautical Academy · 2026
               </span>
             </div>
 
@@ -394,7 +394,7 @@ export default function Portfolio() {
             </p>
 
             <p className="a4" style={{ ...sans, fontSize: '15px', color: '#848280', fontWeight: 300, lineHeight: 1.78, maxWidth: '440px', marginBottom: '32px' }}>
-              Vanderbilt ME rising junior. Designed thermal systems for a Mars cave rover through NASA L'SPACE. Former Division I athlete.
+              Vanderbilt ME student. Currently at NASA Langley as structures lead on a 3D-printed UAS airworthiness program. Former Division I athlete.
             </p>
 
             <div className="a5 hero-links" style={{ display: 'flex', alignItems: 'center', gap: '18px', marginBottom: '32px', flexWrap: 'wrap' }}>
@@ -426,8 +426,8 @@ export default function Portfolio() {
 
             <div className="a6" style={{ display: 'flex', gap: '44px', paddingTop: '26px', borderTop: '1px solid #1A1A1E', flexWrap: 'wrap' }}>
               {[
-                { label: 'Currently at', value: 'Vanderbilt University' },
-                { label: 'Incoming intern', value: 'NASA Langley Research Center' },
+                { label: 'Structures Lead', value: 'NASA Aeronautical Academy' },
+                { label: 'Student', value: 'Vanderbilt University, ME' },
               ].map((cr, i) => (
                 <div key={i}>
                   <p style={{ ...mono, fontSize: '10px', letterSpacing: '0.18em', textTransform: 'uppercase', color: '#E85D26', marginBottom: '5px' }}>{cr.label}</p>
@@ -513,8 +513,8 @@ export default function Portfolio() {
                   <h3 style={{ ...serif, fontSize: '30px', fontWeight: 600, fontStyle: 'italic', color: '#EDEDEA', marginBottom: '22px' }}>Education</h3>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                     {[
-                      { school: 'Vanderbilt University', location: 'Nashville, TN', degree: 'B.E. Mechanical Engineering', gpa: '3.93 / 4.00', date: 'Aug 2025 – Present', activities: ['NROTC', 'Society of Women Engineers', 'Engineers Without Borders'] },
-                      { school: 'Union College', location: 'Schenectady, NY', degree: 'B.E. Mechanical Engineering', gpa: '3.87 / 4.00', date: 'June 2023 – June 2024', activities: ["Dean's List", 'NCAA Division I Ice Hockey'] },
+                      { school: 'Vanderbilt University', location: 'Nashville, TN', degree: 'B.E. Mechanical Engineering', gpa: '3.91 / 4.00', date: 'Aug 2025 – Present', activities: ['NROTC', 'Society of Women Engineers', 'Engineers Without Borders'] },
+                      { school: 'Union College', location: 'Schenectady, NY', degree: 'B.E. Mechanical Engineering', gpa: '3.87 / 4.00', date: 'Aug 2023 – June 2024', activities: ["Dean's List", 'NCAA Division I Ice Hockey'] },
                     ].map((edu, i) => (
                       <div key={i} style={{ padding: '22px 26px', border: '1px solid #1A1A1E', borderRadius: '7px', background: '#0D0D10' }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '12px', marginBottom: '8px', flexWrap: 'wrap' }}>
@@ -541,8 +541,8 @@ export default function Portfolio() {
                   <h3 style={{ ...serif, fontSize: '30px', fontWeight: 600, fontStyle: 'italic', color: '#EDEDEA', marginBottom: '26px' }}>Skills & Tools</h3>
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(210px, 1fr))', gap: '36px' }}>
                     {[
-                      { category: 'Software & Programming', items: ['Python', 'Java', 'MATLAB / Simulink / Simscape', 'LabVIEW', 'Arduino', 'HTML / React'] },
-                      { category: 'Engineering & Design', items: ['SolidWorks (CSWA Certified)', 'AutoCAD', 'FEA & Thermal Analysis', 'Prototyping & Fabrication', 'NI DAQ & Instrumentation'] },
+                      { category: 'Software & Programming', items: ['Python', 'MATLAB / Simulink / Simscape', 'LabVIEW', 'Arduino', 'Git', 'HTML / React'] },
+                      { category: 'Engineering & Design', items: ['PTC Creo (CAD, FEA, CFD, Generative Design)', 'SolidWorks (CSWA Certified)', 'Siemens NX', 'ANSYS', 'Autodesk Fusion', '3D Printing / Additive Manufacturing', 'NI DAQ & Instrumentation'] },
                       { category: 'Aerospace Focus', items: ['Thermal Management Systems', 'MLI / PCM / Heat Pipes', 'Aerodynamics & CFD', 'Systems Integration', 'NASA Proposal Standards'] },
                       { category: 'Certifications & Languages', items: ['CSWA — SolidWorks', 'DFP Affaires B1', 'English (Native)', 'French (Professional)'] },
                     ].map(({ category, items }, i) => (
