@@ -26,11 +26,11 @@ const dmMono = DM_Mono({
 
 export const metadata: Metadata = {
   title: 'Eleanor Abel — Mechanical Engineer',
-  description: 'Aerospace-focused mechanical engineer at Vanderbilt. Incoming intern at NASA Langley. Former Division I athlete.',
+  description: 'Aerospace-focused mechanical engineer at Vanderbilt. Structures lead at NASA Aeronautical Academy. Former Division I athlete.',
   keywords: ['mechanical engineering', 'aerospace', 'engineer', 'portfolio', 'NASA', 'Vanderbilt'],
   openGraph: {
     title: 'Eleanor Abel — Mechanical Engineer',
-    description: 'Aerospace-focused mechanical engineer at Vanderbilt. Incoming intern at NASA Langley.',
+    description: 'Aerospace-focused mechanical engineer at Vanderbilt. Structures lead at NASA Aeronautical Academy.',
     type: 'website',
   },
 };
